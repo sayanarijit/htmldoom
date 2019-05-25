@@ -4,14 +4,6 @@ import re
 import typing as t
 
 
-__author__ = "Arijit Basu"
-__email__ = "sayanarijit@gmail.com"
-__homepage__ = "https://github.com/sayanarijit/htmldoom"
-__description__ = "Write safer and cleaner HTML using Python"
-__version__ = "v0.1"
-__license__ = "MIT"
-
-
 def double_quote(txt: str) -> str:
     """Double quote strings safely for attributes.
     

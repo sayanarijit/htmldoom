@@ -1,8 +1,1 @@
-htmldoom
-========
-Write safer and cleaner HTML using Python
-
-[![PyPI version](https://img.shields.io/pypi/v/htmldoom.svg)](https://pypi.org/project/htmldoom)
-[![Build Status](https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master)](https://travis-ci.org/sayanarijit/htmldoom)
-[![codecov](https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg)](https://codecov.io/gh/sayanarijit/htmldoom)
-
+<body><section><h1>htmldoom</h1><p>Write safer and cleaner HTML using Python</p><p><span><a href="https://pypi.org/project/htmldoom"><image src="https://img.shields.io/pypi/v/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://travis-ci.org/sayanarijit/htmldoom"><image src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master" alt="Build Status" /></a></span>&nbsp;<span><a href="https://codecov.io/gh/sayanarijit/htmldoom"><image src="https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg" alt="codecov" /></a></span></p></section></body>
