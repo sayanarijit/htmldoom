@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from html import escape
 
 import re
@@ -24,7 +22,7 @@ def double_quote(txt: str) -> str:
     return '"{}"'.format(txt.replace('"', '\\"'))
 
 
-def render_element(element: _ElementType) -> str:
+def render_element(element: "_ElementType") -> str:
     """Render any element.
     
     Usage:
@@ -55,7 +53,7 @@ def render_element(element: _ElementType) -> str:
     )
 
 
-def css(**code: t.Dict[str, t.Dict[str, t.Union[str, Iterable]]]) -> str:
+def css(**code: t.Dict[str, t.Dict[str, t.Union[str, t.Iterable]]]) -> str:
     """Helps rendering CSS code.
     
     Usage:
@@ -205,7 +203,7 @@ class _SingleChildTag(_Tag):
         super().__init__(*attrs, **props)
         self.child = ""
 
-    def __call__(self, child: t.Union[_ELementType, str, bytes]) -> _SingleChildTag:
+    def __call__(self, child: t.Union["_ELementType", str, bytes]) -> "_SingleChildTag":
         tag = type(self)(*self.attrs, **self.props)
         if isinstance(child, str):
             tag.child = _Text(child)
@@ -242,7 +240,7 @@ class _CompositeTag(_Tag):
         super().__init__(*attrs, **props)
         self.children: _ElementType = []
 
-    def __call__(self, *children: t.Union[_ElementType, str, bytes]) -> _CompositeTag:
+    def __call__(self, *children: t.Union[_ElementType, str, bytes]) -> "_CompositeTag":
         tag = type(self)(*self.attrs, **self.props)
         for c in children:
             if isinstance(c, str):
@@ -628,7 +626,7 @@ class Samp(_CompositeTag):
 class Script(_SingleChildTag):
     tagname = "script"
 
-    def __call__(self, child: str) -> Script:
+    def __call__(self, child: str) -> "Script":
         s = Script(*self.attrs, **self.props)
         s.child = child
         return s
@@ -661,7 +659,7 @@ class Strong(_CompositeTag):
 class Style(_SingleChildTag):
     tagname = "style"
 
-    def __call__(self, child: str) -> Style:
+    def __call__(self, child: str) -> "Style":
         s = Style(*self.attrs, **self.props)
         s.child = child
         return s

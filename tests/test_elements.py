@@ -1,4 +1,4 @@
-import htmldoom.elements as e
+from htmldoom import elements as e
 
 
 def test_double_quote():
@@ -65,11 +65,11 @@ def test_Address():
     )
 
 
-def test_audio():
+def test_Audio():
     assert repr(e.Audio("controls")("foo")) == "<audio controls>foo</audio>"
 
 
-def test_script():
+def test_Script():
     assert (
         repr(e.Script()('var x = "<p>&nbsp;</p>";'))
         == '<script>var x = "<p>&nbsp;</p>";</script>'
