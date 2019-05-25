@@ -209,10 +209,10 @@ class _SingleChildTag(_Tag):
             tag.child = _Text(child)
             return tag
         if isinstance(child, bytes):
-            tag.child = _RawText(child)
+            tag.child = _RawText(child.decode("utf-8"))
             return tag
         tag.child = child
-        return child
+        return tag
 
     def __repr__(self) -> str:
         return "<{0}{1}{2}>{3}</{0}>".format(

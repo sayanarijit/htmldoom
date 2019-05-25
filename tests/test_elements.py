@@ -53,6 +53,7 @@ def test_Br():
 def test_A():
     assert repr(e.A(href="#")) == '<a href="#"></a>'
     assert repr(e.A(href="#")("foo")) == '<a href="#">foo</a>'
+    assert repr(e.A(href="#")(e._RawText("foo&"))) == '<a href="#">foo&</a>'
 
 
 def test_Abbr():
@@ -61,7 +62,7 @@ def test_Abbr():
 
 def test_Address():
     assert (
-        repr(e.Address()(e._RawText(f"foo{e.Br()}"))) == "<address>foo<br /></address>"
+        repr(e.Address()(f"foo{e.Br()}".encode())) == "<address>foo<br /></address>"
     )
 
 
@@ -74,3 +75,12 @@ def test_Script():
         repr(e.Script()('var x = "<p>&nbsp;</p>";'))
         == '<script>var x = "<p>&nbsp;</p>";</script>'
     )
+
+def test_Style():
+    assert repr(e.Style()(e.css(p={"color": "red"}))) == "<style>p{color:'red';}</style>"
+
+
+def test_TextArea():
+    assert repr(e.TextArea()("<div>")) == "<textarea>&lt;div&gt;</textarea>"
+    assert repr(e.TextArea()(b"<div>")) == "<textarea><div></textarea>"
+    assert repr(e.TextArea()(e._RawText("<div>"))) == "<textarea><div></textarea>"
