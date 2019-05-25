@@ -628,7 +628,7 @@ class Script(_SingleChildTag):
 
     def __call__(self, child: str) -> "Script":
         s = Script(*self.attrs, **self.props)
-        s.child = child
+        s.child = _RawText(child)
         return s
 
 
@@ -661,7 +661,7 @@ class Style(_SingleChildTag):
 
     def __call__(self, child: str) -> "Style":
         s = Style(*self.attrs, **self.props)
-        s.child = child
+        s.child = _RawText(child)
         return s
 
 
