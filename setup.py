@@ -50,7 +50,7 @@ setup(
     ],
     platforms=["Any"],
     keywords="html dom builder",
-    packages=find_packages(exclude=["contrib", "docs", "tests", "examples"]),
+    packages=find_packages(exclude=["contrib", "docs", "tests", "examples", "benchmark"]),
     install_requires=[],
     extras_require={"testing": ["pytest>=4.4.1", "pytest-cov>=2.7.1", "black>=19.3b0"]},
 )

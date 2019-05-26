@@ -1,7 +1,7 @@
 """The core elements used to render HTML.
 
 Example:
-    >>> from htmldoom import element as e
+    >>> from htmldoom import elements as e
     >>> e.P(style=e.css(color="red"))("This is a paragraph")
     <p style="color: 'red';">This is a paragraph</p>
 """

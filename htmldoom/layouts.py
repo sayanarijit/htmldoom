@@ -9,7 +9,7 @@ class BaseLayout:
     """HTML layout for a basic page.
 
     Usage:
-        >>> from htmldoom import element as e
+        >>> from htmldoom import elements as e
         >>> from htmldoom.layouts import BaseLayout
         >>> 
         >>> class MyLayout(BaseLayout):
