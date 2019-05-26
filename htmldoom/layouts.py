@@ -15,13 +15,14 @@ class BaseLayout:
         >>> class MyLayout(BaseLayout):
         ...     @property
         ...     def title(self) -> e.Title:
-        ...         return e.Title(self.data["title"])
+        ...         return e.Title()(self.data["title"])
         ...     @property
         ...     def body(self) -> e.Body:
-        ...         return e.Body(f"Welcome {self.data['user']['name']}")
+        ...         return e.Body()(f"Welcome {self.data['user']['name']}")
         ... 
         ... MyLayout({"title": "foo", "user": {"name": "bar"}})
-        '<!DOCTYPE html>\n<html><head><title>foo</title></head><body>Welcome bar</body></html>'
+        <!DOCTYPE html>
+        <html><head><title>foo</title></head><body>Welcome bar</body></html>
     """
 
     def __init__(self, data: t.Any = None) -> None:
