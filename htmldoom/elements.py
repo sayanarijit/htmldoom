@@ -500,7 +500,7 @@ class IFrame(_CompositeTag):
 
 
 class Img(_LeafTag):
-    tagname = "image"
+    tagname = "img"
 
 
 class Input(_LeafTag):
