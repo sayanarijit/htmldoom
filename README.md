@@ -1,6 +1,6 @@
 <div><h1 align="center">htmldoom</h1><p align="center">Write safer and cleaner HTML using Python</p><p align="center"><span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/v/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://travis-ci.org/sayanarijit/htmldoom"><img src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master" alt="Build Status" /></a></span>&nbsp;<span><a href="https://codecov.io/gh/sayanarijit/htmldoom"><img src="https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg" alt="codecov" /></a></span>&nbsp;<span><a href="https://github.com/python/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a></span></p><p><h2>Usage</h2><p><pre>&gt;&gt;&gt; from htmldoom import elements as e
 &gt;&gt;&gt; 
-&gt;&gt;&gt; e.P(style=e.css(color=&quot;red&quot;))(&quot;This is a paragraph&quot;)
+&gt;&gt;&gt; e.P(style=e.style(color=&quot;red&quot;))(&quot;This is a paragraph&quot;)
 &lt;p style=&quot;color: &#x27;red&#x27;;&quot;&gt;This is a paragraph&lt;/p&gt;</pre></p><p><pre>&gt;&gt;&gt; from htmldoom import elements as e
 &gt;&gt;&gt; from htmldoom.layouts import BaseLayout
 &gt;&gt;&gt; 

@@ -45,7 +45,7 @@ doc = e.Div()(
             e.Pre()(
                 ">>> from htmldoom import elements as e\n"
                 ">>> \n"
-                """>>> e.P(style=e.css(color="red"))("This is a paragraph")\n"""
+                """>>> e.P(style=e.style(color="red"))("This is a paragraph")\n"""
                 """<p style="color: 'red';">This is a paragraph</p>"""
             )
         ),

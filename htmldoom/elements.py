@@ -2,7 +2,7 @@
 
 Example:
     >>> from htmldoom import elements as e
-    >>> e.P(style=e.css(color="red"))("This is a paragraph")
+    >>> e.P(style=e.style(color="red"))("This is a paragraph")
     <p style="color: 'red';">This is a paragraph</p>
 """
 
