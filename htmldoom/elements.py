@@ -87,7 +87,7 @@ def style(**code: t.Union[str, t.Iterable]) -> str:
 
 
 class _RawText:
-    """Use it for unescaped HTML.
+    """Use it for unescaped text.
     
     Usage:
         >>> _RawText("<div>&nbsp;</div>")
@@ -149,7 +149,7 @@ class DocType(_Declaration):
     """
 
     def __init__(self, *attrs: str) -> None:
-        self.attrs = attrs
+        self.attrs: t.List[str] = attrs
 
     def __repr__(self) -> str:
         return "<!DOCTYPE {}>".format(
@@ -166,8 +166,8 @@ class _Tag:
     tagname: str = ""
 
     def __init__(self, *attrs: str, **props: str) -> None:
-        self.attrs = attrs
-        self.props = props
+        self.attrs: t.List[str] = attrs
+        self.props: t.Dict[str, str] = props
 
     def __repr__(self) -> str:
         return "<{}{}{} />".format(
@@ -201,7 +201,7 @@ class _SingleChildTag(_Tag):
 
     def __init__(self, *attrs: str, **props: str) -> None:
         super().__init__(*attrs, **props)
-        self.child = ""
+        self.child: t.Union[str, bytes, _ELementType] = ""
 
     def __call__(self, child: t.Union["_ELementType", str, bytes]) -> "_SingleChildTag":
         tag = type(self)(*self.attrs, **self.props)
@@ -238,7 +238,7 @@ class _CompositeTag(_Tag):
 
     def __init__(self, *attrs: str, **props: str) -> None:
         super().__init__(*attrs, **props)
-        self.children: _ElementType = []
+        self.children: t.Union[str, bytes, _ElementType] = []
 
     def __call__(self, *children: t.Union[_ElementType, str, bytes]) -> "_CompositeTag":
         tag = type(self)(*self.attrs, **self.props)
@@ -260,10 +260,10 @@ class A(_CompositeTag):
     """Anchor tag: <a>.
     
     Usage:
-        >>> repr(A(href="#"))
+        >>> A(href="#")
         <a href="#"></a>
         >>> 
-        >>> render_element(A(href="#")("foo"))
+        >>> A(href="#")("foo")
         <a href="#">foo</a>
     """
 
@@ -274,7 +274,7 @@ class Abbr(_CompositeTag):
     """Abbreviation tag: <abbr>.
 
     Usage:
-        >>> repr(Abbr(title="World Health Organization")("WHO"))
+        >>> Abbr(title="World Health Organization")("WHO")
         <abbr title="World Health Organization">WHO</abbr>
     """
 
@@ -285,12 +285,12 @@ class Address(_CompositeTag):
     """Address tag: <address>.
     
     Usage:
-        >>> repr(Address()(_RawText(f"
+        >>> Address()(_RawText(f"
         ... John Doe{Br()}
         ... Visit us at:{Br()}
         ... Example.com{Br()}
         ... Box 564, Disneyland{Br()}
-        ... USA"))
+        ... USA")
         <address>John Doe<br />
         Visit us at:<br />
         Example.com<br />

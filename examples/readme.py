@@ -13,6 +13,15 @@ doc = e.Div()(
         ),
         b"&nbsp;",
         e.Span()(
+            e.A(href="https://pypi.org/project/htmldoom")(
+                e.Img(
+                    src="https://img.shields.io/pypi/pyversions/htmldoom.svg",
+                    alt="PyPI pyversions",
+                )
+            )
+        ),
+        b"&nbsp;",
+        e.Span()(
             e.A(href="https://travis-ci.org/sayanarijit/htmldoom")(
                 e.Img(
                     src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master",
@@ -46,7 +55,7 @@ doc = e.Div()(
                 ">>> from htmldoom import elements as e\n"
                 ">>> \n"
                 """>>> e.P(style=e.style(color="red"))("This is a paragraph")\n"""
-                """<p style="color: 'red';">This is a paragraph</p>"""
+                """<p style="color:'red';">This is a paragraph</p>"""
             )
         ),
         e.P()(
@@ -104,10 +113,10 @@ doc = e.Div()(
         ),
         e.H3()("Conclusion"),
         e.P()(
-            "htmldoom performs best upto a certain number of recursions which is generally high enough."
+            "htmldoom performs best upto a certain number of loops which is generally high enough."
             " These measurements are very naive and shows very basic information. Some templating engines might have"
-            " performance optimizations (such caching) enabled by default. However, In case of htmldoom, it's"
-            " upto to developer (for now) to optimize it."
+            " performance optimizations (such as caching) enabled by default. However, In case of htmldoom, it's"
+            " upto to the developer (for now) to optimize it."
         ),
     ),
 )
