@@ -201,7 +201,7 @@ class _SingleChildTag(_Tag):
 
     def __init__(self, *attrs: str, **props: str) -> None:
         super().__init__(*attrs, **props)
-        self.child: t.Union[str, bytes, _ELementType] = ""
+        self.child: _ELementType = _Text("")
 
     def __call__(self, child: t.Union["_ELementType", str, bytes]) -> "_SingleChildTag":
         tag = type(self)(*self.attrs, **self.props)
@@ -238,7 +238,7 @@ class _CompositeTag(_Tag):
 
     def __init__(self, *attrs: str, **props: str) -> None:
         super().__init__(*attrs, **props)
-        self.children: t.Union[str, bytes, _ElementType] = []
+        self.children: t.List[_ElementType] = []
 
     def __call__(self, *children: t.Union[_ElementType, str, bytes]) -> "_CompositeTag":
         tag = type(self)(*self.attrs, **self.props)
