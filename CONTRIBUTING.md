@@ -7,7 +7,7 @@ Then follow the guidelines to setup the development environment.
 git clone https://github.com/$USER/htmldoom
 cd htmldoom
 
-# Create and activate virtual environment
+# Create and activate virtual environment. You need Python version > 3.6
 python3 -m venv .venv
 source .venv/bin/activate
 
