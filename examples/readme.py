@@ -119,6 +119,15 @@ doc = e.Div()(
             " upto to the developer (for now) to optimize it."
         ),
     ),
+    e.P()(
+        e.H2()("Contributing"),
+        e.P()(
+            "Check out the ",
+            e.A(
+                href="https://github.com/sayanarijit/htmldoom/tree/master/CONTRIBUTING.md"
+            )(" contributing guidelines."),
+        ),
+    ),
 )
 
 print(doc)
