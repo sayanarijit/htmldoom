@@ -20,6 +20,8 @@ git checkout -b fix/my-patch
 
 Then make the changes and format using `black $filename`.
 
+Also test the changes locally using `pytest`.
+
 Commit your changes. Each commit and pull request should solve a specific problem. Use `rebase`, `squash` or `--amend` to squash your commits.
  Check out the [git commit guidelines](https://chris.beams.io/posts/git-commit/).
 
