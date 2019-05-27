@@ -25,4 +25,4 @@ Also test the changes locally using `pytest`.
 Commit your changes. Each commit and pull request should solve a specific problem. Use `rebase`, `squash` or `--amend` to squash your commits.
  Check out the [git commit guidelines](https://chris.beams.io/posts/git-commit/).
 
-After that push the changes to your repo and raise a pull request to [master branch](https://github.com/sayanarijit/htmldoom).
+After that push the changes to your repo and raise a pull request to the [master branch](https://github.com/sayanarijit/htmldoom/tree/master).
