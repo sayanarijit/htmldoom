@@ -1,4 +1,4 @@
-To contribute to this project, first clone this project in your own GitHub account.
+To contribute to this project, first fork this project in your own GitHub account.
 
 Then follow the guidelines to setup the development environment.
 
