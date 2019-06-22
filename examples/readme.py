@@ -114,9 +114,7 @@ doc = e.Div()(
         e.H3()("Conclusion"),
         e.P()(
             "htmldoom performs best upto a certain number of loops which is generally high enough."
-            " These measurements are very naive and shows very basic information. Some templating engines might have"
-            " performance optimizations (such as caching) enabled by default. However, In case of htmldoom, it's"
-            " upto to the developer (for now) to optimize it."
+            " These measurements are very naive and shows very basic information."
         ),
     ),
     e.P()(
