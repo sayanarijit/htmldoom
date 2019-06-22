@@ -61,9 +61,7 @@ def test_Abbr():
 
 
 def test_Address():
-    assert (
-        repr(e.Address()(f"foo{e.Br()}".encode())) == "<address>foo<br /></address>"
-    )
+    assert repr(e.Address()(f"foo{e.Br()}".encode())) == "<address>foo<br /></address>"
 
 
 def test_Audio():
@@ -76,8 +74,11 @@ def test_Script():
         == '<script>var x = "<p>&nbsp;</p>";</script>'
     )
 
+
 def test_Style():
-    assert repr(e.Style()(e.css(p={"color": "red"}))) == "<style>p{color:'red';}</style>"
+    assert (
+        repr(e.Style()(e.css(p={"color": "red"}))) == "<style>p{color:'red';}</style>"
+    )
 
 
 def test_TextArea():

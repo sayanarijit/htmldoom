@@ -1,7 +1,8 @@
-from htmldoom import elements as e
-from jinja2 import Template
 from chameleon import PageTemplate
+from jinja2 import Template
 from mako.template import Template as MakoTemplate
+
+from htmldoom import elements as e
 
 
 def odd_paragraphs(n):
@@ -75,7 +76,7 @@ def htmldoom(n):
         e.Body()(
             e.Div()(
                 e.Div()(f"Printing odd paragraphs with till {n}"),
-                e.Div()(odd_paragraphs(n)),
+                e.Div()(*odd_paragraphs(n)),
                 e.Footer()("This is it then..."),
             )
         ),

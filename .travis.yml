@@ -8,6 +8,7 @@ matrix:
 install:
   - pip install -e '.[testing]'
 script:
+  - black --check .
   - pytest --cov=htmldoom
 after_success:
   - bash <(curl -s https://codecov.io/bash)
