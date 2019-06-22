@@ -93,7 +93,7 @@ doc = e.Div()(
         ),
         e.H3()("htmldoom"),
         e.Img(
-            src="https://thepracticaldev.s3.amazonaws.com/i/dc0pruqhyvi1jk5zxyi9.png",
+            src="https://thepracticaldev.s3.amazonaws.com/i/6dmd4r7lgoqu9wrv4wr9.png",
             alt="htmldoom stats",
         ),
         e.H3()("Jinja2"),
