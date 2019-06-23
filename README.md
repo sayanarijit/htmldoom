@@ -7,10 +7,10 @@
 &gt;&gt;&gt; class MyLayout(BaseLayout):
 ...     @property
 ...     def title(self) -&gt; e.Title:
-...         return e.Title()(self.data[&quot;title&quot;])
+...         return e.Title()(self[&quot;title&quot;])
 ...     @property
 ...     def body(self) -&gt; e.Body:
-...         return e.Body()(f&quot;Welcome {self.data[&#x27;user&#x27;][&#x27;name&#x27;]}&quot;)
+...         return e.Body()(f&quot;Welcome {self[&#x27;user&#x27;][&#x27;name&#x27;]}&quot;)
 
 ... 
 &gt;&gt;&gt; MyLayout({&quot;title&quot;: &quot;foo&quot;, &quot;user&quot;: {&quot;name&quot;: &quot;bar&quot;}})

@@ -1,6 +1,7 @@
 """Built-in layouts."""
 
 import typing as t
+from types import MappingProxyType
 
 from htmldoom import elements as e
 
@@ -10,6 +11,9 @@ __all__ = ["BaseLayout", "Component"]
 class BaseLayout:
     """HTML layout for a basic page.
 
+    Optional arguments:
+        data: Dynamic data to render.
+
     Usage:
         >>> from htmldoom import elements as e
         >>> from htmldoom.layouts import BaseLayout
@@ -17,18 +21,18 @@ class BaseLayout:
         >>> class MyLayout(BaseLayout):
         ...     @property
         ...     def title(self) -> e.Title:
-        ...         return e.Title()(self.data["title"])
+        ...         return e.Title()(self["title"])
         ...     @property
         ...     def body(self) -> e.Body:
-        ...         return e.Body()(f"Welcome {self.data['user']['name']}")
+        ...         return e.Body()(f"Welcome {self['user']['name']}")
         ... 
         >>> MyLayout({"title": "foo", "user": {"name": "bar"}})
         <!DOCTYPE html>
         <html><head><title>foo</title></head><body>Welcome bar</body></html>
     """
 
-    def __init__(self, data: t.Any = None) -> None:
-        self.data = data
+    def __init__(self, data: t.Optional[t.Mapping[object, object]] = None) -> None:
+        self.data: MappingProxyType = MappingProxyType(data or {})
 
     @property
     def doctype(self) -> e.DocType:
@@ -50,6 +54,9 @@ class BaseLayout:
         """Document body"""
         return e.Body()
 
+    def __getitem__(self, name: object) -> object:
+        return self.data[name]
+
     def render(self) -> t.Tuple[e.DocType, e.HTML]:
         return self.doctype, e.HTML()(self.head, self.body)
 
@@ -60,6 +67,9 @@ class BaseLayout:
 class Component:
     """HTML component.
     
+    Optional arguments:
+        data: Dynamic data to render.
+
     Usage:
         >>> from htmldoom import elements as e
         >>> from htmldoom.layouts import Component
@@ -70,7 +80,7 @@ class Component:
         ...         return e.Input()
         ...     @property
         ...     def submit_btn(self) -> e.Button:
-        ...         return e.Button()("update" if self.data["submitted"] else "submit")
+        ...         return e.Button()("update" if self["submitted"] else "submit")
         ...     def render(self) -> e.Form:
         ...         return e.Form()(self.textbox, e.Br(), self.submit_btn)
         ... 
@@ -78,8 +88,11 @@ class Component:
         <form><input /><br /><button>submit</button></form>
     """
 
-    def __init__(self, data: t.Any = None) -> None:
-        self.data = data
+    def __init__(self, data: t.Optional[t.Mapping[object, object]] = None) -> None:
+        self.data: MappingProxyType = MappingProxyType(data or {})
+
+    def __getitem__(self, name: object) -> object:
+        return self.data[name]
 
     def render(self) -> e._ElementType:
         return e._Text(str(self.data))

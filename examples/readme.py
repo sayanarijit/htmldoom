@@ -71,10 +71,10 @@ class ReadMe(Component):
                 ">>> class MyLayout(BaseLayout):\n"
                 "...     @property\n"
                 "...     def title(self) -> e.Title:\n"
-                '...         return e.Title()(self.data["title"])\n'
+                '...         return e.Title()(self["title"])\n'
                 "...     @property\n"
                 "...     def body(self) -> e.Body:\n"
-                """...         return e.Body()(f"Welcome {self.data['user']['name']}")\n\n"""
+                """...         return e.Body()(f"Welcome {self['user']['name']}")\n\n"""
                 "... \n"
                 """>>> MyLayout({"title": "foo", "user": {"name": "bar"}})\n"""
                 "<!DOCTYPE html>\n"
