@@ -48,12 +48,11 @@ class BaseLayout:
         """Document body"""
         return e.Body()
 
-    @property
     def render(self) -> t.Tuple[e.DocType, e.HTML]:
         return self.doctype, e.HTML()(self.head, self.body)
 
     def __repr__(self) -> str:
-        return "\n".join(map(str, self.render))
+        return "\n".join(map(str, self.render()))
 
 
 class Component:
@@ -70,7 +69,6 @@ class Component:
         ...     @property
         ...     def submit_btn(self) -> e.Button:
         ...         return e.Button()("update" if self.data["submitted"] else "submit")
-        ...     @property
         ...     def render(self) -> e.Form:
         ...         return e.Form()(self.textbox, e.Br(), self.submit_btn)
         ... 
@@ -81,9 +79,8 @@ class Component:
     def __init__(self, data: t.Any = None) -> None:
         self.data = data
 
-    @property
     def render(self) -> e._ElementType:
         return e._Text(str(self.data))
 
     def __repr__(self) -> str:
-        return str(self.render)
+        return str(self.render())

@@ -13,7 +13,138 @@ from functools import lru_cache
 from html import escape
 from types import MappingProxyType
 
-MAX_CACHE_SIZE = 12800
+__all__ = [
+    "MAX_CACHE_SIZE",
+    "double_quote",
+    "render_element",
+    "css",
+    "style",
+    "_RawText",
+    "_Text",
+    "_Declaration",
+    "_Comment",
+    "DocType",
+    "_Tag",
+    "_LeafTag",
+    "_SingleChildTag",
+    "_CompositeTag",
+    "A",
+    "Abbr",
+    "Address",
+    "Area",
+    "Article",
+    "Aside",
+    "Audio",
+    "B",
+    "Base",
+    "BDI",
+    "BDO",
+    "BlockQuote",
+    "Body",
+    "Br",
+    "Button",
+    "Canvas",
+    "Caption",
+    "Cite",
+    "Code",
+    "Col",
+    "ColGroup",
+    "Data",
+    "DataList",
+    "DD",
+    "Del",
+    "Details",
+    "DFN",
+    "Dialog",
+    "Div",
+    "DL",
+    "DT",
+    "Em",
+    "Embed",
+    "FieldSet",
+    "FigCaption",
+    "Figure",
+    "Footer",
+    "Form",
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5",
+    "H6",
+    "Head",
+    "Header",
+    "HR",
+    "HTML",
+    "I",
+    "IFrame",
+    "Img",
+    "Input",
+    "Ins",
+    "Kbd",
+    "Label",
+    "Legend",
+    "LI",
+    "Link",
+    "Main",
+    "Map",
+    "Mark",
+    "Meta",
+    "Meter",
+    "Nav",
+    "NoScript",
+    "Object",
+    "OL",
+    "OptGroup",
+    "Option",
+    "Output",
+    "P",
+    "Param",
+    "Picture",
+    "Pre",
+    "Progress",
+    "Q",
+    "RP",
+    "RT",
+    "Ruby",
+    "S",
+    "Samp",
+    "Script",
+    "Section",
+    "Select",
+    "Small",
+    "Source",
+    "Span",
+    "Strong",
+    "Style",
+    "Sub",
+    "Summary",
+    "Sup",
+    "SVG",
+    "Table",
+    "TBody",
+    "TD",
+    "Template",
+    "TextArea",
+    "TFoot",
+    "TH",
+    "THead",
+    "Time",
+    "Title",
+    "TR",
+    "Track",
+    "U",
+    "UL",
+    "Var",
+    "Video",
+    "WBr",
+]
+
+MAX_CACHE_SIZE: int = 12800
+
+
+_ElementType = t.Union["_RawText", "_Text", "_Declaration", "_Tag"]  # type: ignore
+_NaiveElementType = t.Union[str, bytes, _ElementType]  # type: ignore
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -28,7 +159,7 @@ def double_quote(txt: str) -> str:
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-def render_element(element: "_ElementType") -> str:
+def render_element(element: _ElementType) -> str:
     """Render any element.
     
     Usage:
@@ -59,7 +190,7 @@ def render_element(element: "_ElementType") -> str:
     )
 
 
-def css(**code: t.Dict[str, t.Dict[str, t.Union[str, t.Iterable]]]) -> str:
+def css(**code: t.Dict[str, t.Union[str, t.Collection[str]]]) -> str:
     """Helps rendering CSS code.
     
     Usage:
@@ -72,7 +203,7 @@ def css(**code: t.Dict[str, t.Dict[str, t.Union[str, t.Iterable]]]) -> str:
     return "".join(f"{k}{{{style(**(code[k]))}}}" for k in code)
 
 
-def style(**code: t.Union[str, t.Iterable[str]]) -> str:
+def style(**code: t.Union[str, t.Collection[str]]) -> str:
     """Use it to render styles.
     
     Usage:
@@ -104,15 +235,16 @@ class _RawText:
     __slots__ = ["value"]
 
     def __init__(self, value: str) -> None:
+        self.value: str
         super().__setattr__("value", value)
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
 
-    def __eq__(self, value):
-        return type(self) == type(value) and self.value == value.value
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self)) and self.value == other.value
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.value")
 
     def __repr__(self) -> str:
@@ -131,15 +263,16 @@ class _Text:
     __slots__ = ["value"]
 
     def __init__(self, value: str) -> None:
+        self.value: str
         super().__setattr__("value", value)
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
 
-    def __eq__(self, value):
-        return type(self) == type(value) and self.value == value.value
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self)) and self.value == other.value
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.value")
 
     def __repr__(self) -> str:
@@ -164,15 +297,16 @@ class _Comment(_Declaration):
     __slots__ = ["value"]
 
     def __init__(self, value: str) -> None:
+        self.value: str
         super().__setattr__("value", value)
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
 
-    def __eq__(self, value):
-        return type(self) == type(value) and self.value == value.value
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self)) and self.value == other.value
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.value")
 
     def __repr__(self) -> str:
@@ -194,15 +328,16 @@ class DocType(_Declaration):
     __slots__ = ["attrs"]
 
     def __init__(self, *attrs: str) -> None:
-        super().__setattr__("attrs", tuple(attrs))
+        self.attrs: t.Tuple[str]
+        super().__setattr__("attrs", attrs)
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
 
-    def __eq__(self, value):
-        return type(self) == type(value) and self.attrs == value.attrs
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self)) and self.attrs == other.attrs
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.attrs")
 
     def __repr__(self) -> str:
@@ -222,24 +357,26 @@ class _Tag:
     tagname: str = ""
 
     def __init__(self, *attrs: str, **props: str) -> None:
-        super().__setattr__("attrs", tuple(attrs))
+        self.attrs: t.Tuple[str]
+        self.props: t.Mapping[str, str]
+        super().__setattr__("attrs", attrs)
         super().__setattr__("props", MappingProxyType(props))
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
 
-    def __eq__(self, value):
+    def __eq__(self, other: object) -> bool:
         return (
-            type(self) == type(value)
-            and self.attrs == value.attrs
-            and self.props == value.props
+            isinstance(other, type(self))
+            and self.attrs == other.attrs
+            and self.props == other.props
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.attrs:self.props")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __repr__(self) -> str:
+    def _repr(self) -> str:
         return "<{}{}{} />".format(
             self.tagname,
             " "
@@ -256,6 +393,9 @@ class _Tag:
             else "",
         )
 
+    def __repr__(self) -> str:
+        return self._repr()
+
 
 class _LeafTag(_Tag):
     """A leaf tag cannot have children."""
@@ -263,7 +403,7 @@ class _LeafTag(_Tag):
     pass
 
 
-_ElementType = t.Union[_RawText, _Text, _Declaration, _Tag]
+_SingleChildTagType = t.TypeVar("_SingleChildTagType", bound="_SingleChildTag")
 
 
 class _SingleChildTag(_Tag):
@@ -272,23 +412,24 @@ class _SingleChildTag(_Tag):
     __slots__ = ["attrs", "props", "child"]
 
     def __init__(self, *attrs: str, **props: str) -> None:
+        self.child: _ElementType
         super().__init__(*attrs, **props)
         super().__class__.__setattr__(self, "child", _Text(""))
 
-    def __eq__(self, value):
+    def __eq__(self, other: object) -> bool:
         return (
-            type(self) == type(value)
-            and self.attrs == value.attrs
-            and self.props == value.props
-            and self.child == value.child
+            isinstance(other, type(self))
+            and self.attrs == other.attrs
+            and self.props == other.props
+            and self.child == other.child
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.attrs:self.props:self.child")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __call__(self, child: t.Union["_ELementType", str, bytes]) -> "_SingleChildTag":
-        _child = child
+    def __call__(self, child: _NaiveElementType) -> _SingleChildTagType:
+        _child: _NaiveElementType = child
         if isinstance(child, str):
             _child = _Text(child)
         elif isinstance(child, bytes):
@@ -298,7 +439,7 @@ class _SingleChildTag(_Tag):
         return tag
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __repr__(self) -> str:
+    def _repr(self) -> str:
         return "<{0}{1}{2}>{3}</{0}>".format(
             self.tagname,
             " "
@@ -316,30 +457,39 @@ class _SingleChildTag(_Tag):
             render_element(self.child),
         )
 
+    def __repr__(self) -> str:
+        return self._repr()
+
+
+_CompositeTagType = t.TypeVar("_CompositeTagType", bound="_CompositeTag")
+
 
 class _CompositeTag(_Tag):
     """A composite tag can have children."""
 
     __slots__ = ["attrs", "props", "children"]
 
-    def __init__(self, *attrs: str, **props: str) -> None:
+    def __init__(self: _CompositeTagType, *attrs: str, **props: str) -> None:
+        self.attrs: t.Tuple[str]
+        self.props: t.Mapping[str, str]
+        self.children: t.Tuple[_ElementType]
         super().__init__(*attrs, **props)
         super().__class__.__setattr__(self, "children", tuple())
 
-    def __eq__(self, value):
+    def __eq__(self, other: object) -> bool:
         return (
-            type(self) == type(value)
-            and self.attrs == value.attrs
-            and self.props == value.props
-            and self.children == value.children
+            isinstance(other, type(self))
+            and self.attrs == other.attrs
+            and self.props == other.props
+            and self.children == other.children
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(f"type(self):self.attrs:self.children")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __call__(self, *children: t.Union[_ElementType, str, bytes]) -> "_CompositeTag":
-        _children = []
+    def __call__(self, *children: _NaiveElementType) -> _CompositeTagType:
+        _children: t.List[_ElementType] = []
         for c in children:
             if isinstance(c, str):
                 _children.append(_Text(c))
@@ -352,7 +502,6 @@ class _CompositeTag(_Tag):
         super(type(tag), tag).__class__.__setattr__(tag, "children", tuple(_children))
         return tag
 
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __repr__(self) -> str:
         return render_element(self)
 
@@ -809,8 +958,8 @@ class Script(_SingleChildTag):
     tagname = "script"
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __call__(self, child: str) -> "Script":
-        s = Script(*self.attrs, **self.props)
+    def __call__(self, child: str) -> _SingleChildTagType:
+        s: Script = Script(*self.attrs, **self.props)
         super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
         return s
 
@@ -850,8 +999,8 @@ class Style(_SingleChildTag):
     tagname = "style"
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __call__(self, child: str) -> "Style":
-        s = Style(*self.attrs, **self.props)
+    def __call__(self, child: str) -> _SingleChildTagType:
+        s: Style = Style(*self.attrs, **self.props)
         super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
         return s
 
