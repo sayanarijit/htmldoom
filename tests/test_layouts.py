@@ -13,7 +13,7 @@ class TestComponent(unittest.TestCase):
 
             @property
             def submit_btn(self) -> e.Button:
-                return e.Button()("update" if self.data["submitted"] else "submit")
+                return e.Button()("update" if self["submitted"] else "submit")
 
             def render(self) -> e.Form:
                 return e.Form()(self.textbox, self.submit_btn)
@@ -23,6 +23,7 @@ class TestComponent(unittest.TestCase):
 
         assert repr(form1) == "<form><input /><button>submit</button></form>"
         assert repr(form2) == "<form><input /><button>update</button></form>"
+        assert Component().render() == e._Text("{}")
 
 
 class TestBaseLayout(unittest.TestCase):
@@ -49,11 +50,11 @@ class TestBaseLayout(unittest.TestCase):
         class MyLayout(BaseLayout):
             @property
             def title(self) -> e.Title:
-                return e.Title()(self.data["title"])
+                return e.Title()(self["title"])
 
             @property
             def body(self) -> e.Body:
-                return e.Body()(f"Welcome {self.data['user']['name']}")
+                return e.Body()(f"Welcome {self['user']['name']}")
 
         layout = MyLayout({"title": "foo", "user": {"name": "bar"}})
         assert repr(layout) == html
