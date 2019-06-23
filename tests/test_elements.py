@@ -1,3 +1,5 @@
+import pytest
+
 from htmldoom import elements as e
 
 
@@ -85,3 +87,47 @@ def test_TextArea():
     assert repr(e.TextArea()("<div>")) == "<textarea>&lt;div&gt;</textarea>"
     assert repr(e.TextArea()(b"<div>")) == "<textarea><div></textarea>"
     assert repr(e.TextArea()(e._RawText("<div>"))) == "<textarea><div></textarea>"
+
+
+def test_immutability():
+    with pytest.raises(AttributeError) as exc:
+        e._RawText("").value = "text"
+    assert str(exc.value) == "can't set attribute"
+
+    with pytest.raises(AttributeError) as exc:
+        e._Text("").value = "text"
+    assert str(exc.value) == "can't set attribute"
+
+    with pytest.raises(AttributeError) as exc:
+        e._Comment("").value = "text"
+    assert str(exc.value) == "can't set attribute"
+
+    with pytest.raises(AttributeError) as exc:
+        e.DocType("").value = "text"
+    assert str(exc.value) == "can't set attribute"
+
+    with pytest.raises(AttributeError) as exc:
+        e._Tag("").attrs = "text"
+    assert str(exc.value) == "can't set attribute"
+
+
+def test_equality():
+    assert e._RawText("x") == e._RawText("x")
+    assert e._RawText("x") != e._RawText("xy")
+    assert hash(e._RawText("x")) == hash(e._RawText("x"))
+
+    assert e._Text("x") == e._Text("x")
+    assert e._Text("x") != e._Text("xy")
+    assert hash(e._Text("x")) == hash(e._Text("x"))
+
+    assert e._Comment("x") == e._Comment("x")
+    assert e._Comment("x") != e._Comment("xy")
+    assert hash(e._Comment("x")) == hash(e._Comment("x"))
+
+    assert e.DocType("x") == e.DocType("x")
+    assert e.DocType("x") != e.DocType("xy")
+    assert hash(e.DocType("x")) == hash(e.DocType("x"))
+
+    assert e._Tag("x") == e._Tag("x")
+    assert e._Tag("x") != e._Tag("xy")
+    assert hash(e._Tag("x")) == hash(e._Tag("x"))

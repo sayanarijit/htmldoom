@@ -140,8 +140,8 @@ __all__ = [
     "WBr",
 ]
 
-MAX_CACHE_SIZE: int = 12800
-
+# I have no idea why it performs best with worst hash functions. TODO: some research.
+MAX_CACHE_SIZE = 12800
 
 _ElementType = t.Union["_RawText", "_Text", "_Declaration", "_Tag"]  # type: ignore
 _NaiveElementType = t.Union[str, bytes, _ElementType]  # type: ignore
@@ -245,7 +245,7 @@ class _RawText:
         return isinstance(other, type(self)) and self.value == other.value
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.value")
+        return hash("{type(self)}:{self.value}")
 
     def __repr__(self) -> str:
         return self.value
@@ -273,7 +273,7 @@ class _Text:
         return isinstance(other, type(self)) and self.value == other.value
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.value")
+        return hash("{type(self)}:{self.value}")
 
     def __repr__(self) -> str:
         return escape(self.value)
@@ -307,7 +307,7 @@ class _Comment(_Declaration):
         return isinstance(other, type(self)) and self.value == other.value
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.value")
+        return hash("{type(self)}:{self.value}")
 
     def __repr__(self) -> str:
         return f"<!-- {escape(self.value)} -->"
@@ -338,7 +338,7 @@ class DocType(_Declaration):
         return isinstance(other, type(self)) and self.attrs == other.attrs
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.attrs")
+        return hash("{type(self)}:{self.attrs}")
 
     def __repr__(self) -> str:
         return "<!DOCTYPE {}>".format(
@@ -373,7 +373,7 @@ class _Tag:
         )
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.attrs:self.props")
+        return hash("{type(self)}:{self.attrs}:{self.props}")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def _repr(self) -> str:
@@ -425,7 +425,7 @@ class _SingleChildTag(_Tag):
         )
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.attrs:self.props:self.child")
+        return hash("{type(self)}:{self.attrs}:{self.props}:{self.child}")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, child: _NaiveElementType) -> _SingleChildTagType:
@@ -485,7 +485,7 @@ class _CompositeTag(_Tag):
         )
 
     def __hash__(self) -> int:
-        return hash(f"type(self):self.attrs:self.children")
+        return hash("{type(self)}:{self.attrs}:{self.children}")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, *children: _NaiveElementType) -> _CompositeTagType:
