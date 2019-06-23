@@ -12,4 +12,5 @@ __all__ = [
     "__version__",
     "__license__",
     "elements",
+    "layouts",
 ]

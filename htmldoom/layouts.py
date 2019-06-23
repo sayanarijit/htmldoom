@@ -4,6 +4,8 @@ import typing as t
 
 from htmldoom import elements as e
 
+__all__ = ["BaseLayout", "Component"]
+
 
 class BaseLayout:
     """HTML layout for a basic page.
