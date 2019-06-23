@@ -15,7 +15,6 @@ class TestComponent(unittest.TestCase):
             def submit_btn(self) -> e.Button:
                 return e.Button()("update" if self.data["submitted"] else "submit")
 
-            @property
             def render(self) -> e.Form:
                 return e.Form()(self.textbox, self.submit_btn)
 

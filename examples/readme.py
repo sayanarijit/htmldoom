@@ -130,8 +130,9 @@ class ReadMe(Component):
             ),
             e.H3()("Conclusion"),
             e.P()(
-                "htmldoom performs best upto a certain number of loops which is generally high enough."
-                " These measurements are very naive and shows very basic information."
+                "htmldoom performs best upto a certain number of loops which is generally high enough.",
+                e.Br(),
+                "NOTE: These measurements are very naive and shows very basic information.",
             ),
         )
 
@@ -147,7 +148,6 @@ class ReadMe(Component):
             ),
         )
 
-    @property
     def render(self) -> e.Div:
         return e.Div()(
             self.header,
