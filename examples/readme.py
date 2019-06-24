@@ -102,7 +102,7 @@ class ReadMe(Component):
             e.P()(
                 "The primary goal is to make writing HTML cleaner, easier, safer and intuitive using Python."
             ),
-            e.H3()("What about performance"),
+            e.H3()("What about performance?"),
             e.P()(
                 (
                     "Although performance is not the primary goal here, it should not be a roadblock."
@@ -125,6 +125,20 @@ class ReadMe(Component):
                     "flyweight pattern"
                 ),
                 ", thus improving the speed of rendering.",
+                e.Br(),
+                "Furthermore, if we follow the ",
+                e.A(
+                    href="https://developers.google.com/web/tools/lighthouse/audits/dom-size"
+                )("the DOM size recommendations"),
+                ", i.e.",
+                e.UL()(
+                    e.LI()("less than 1500 nodes total."),
+                    e.LI()("maximum depth of 32 nodes."),
+                    e.LI()("no parent node with more than 60 child nodes."),
+                ),
+                " htmldoom performs really well (refer to the ",
+                e.A(href="#benchmarks")("benchmarks"),
+                ").",
             ),
         )
 
