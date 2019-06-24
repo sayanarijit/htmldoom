@@ -86,13 +86,63 @@ class ReadMe(Component):
     def more_examples(self) -> e.P:
         return e.P()(
             e.A(href="https://github.com/sayanarijit/htmldoom/tree/master/examples")(
-                "Find more examples here"
+                e.B()("Find more examples here")
             )
         )
 
     @property
     def usage(self) -> e.P:
         return e.P()(e.H2()("Usage"), self.example1, self.example2, self.more_examples)
+
+    @property
+    def q_n_a(self) -> e.P:
+        return e.P()(
+            e.H2()("Q/A"),
+            e.H3()("What is the goal here?"),
+            e.P()(
+                "The primary goal is to make writing HTML cleaner, easier, safer and intuitive using Python."
+            ),
+            e.H3()("What about performance"),
+            e.P()(
+                (
+                    "Although performance is not the primary goal here, it should not be a roadblock."
+                    " htmldoom is copying the syntax and properties of "
+                ),
+                e.A(href="https://elm-lang.org")("elm"),
+                (
+                    ", an existing fast and purely functional programming language"
+                    " that specializes in rendering HTML in virtual doms."
+                    " Elm does all the optimisation internally which I'm sure can be"
+                    " implemented in Python to a great extent."
+                ),
+                e.Br(),
+                (
+                    "All the elements and attributes in htmldoom is supposed to be immutable"
+                    " (unless you want to hack it for some reason). Being immutable enables them"
+                    " to be cachable and sharable making use of the "
+                ),
+                e.A(href="https://en.wikipedia.org/wiki/Flyweight_pattern")(
+                    "flyweight pattern"
+                ),
+                ", thus improving the speed of rendering.",
+            ),
+        )
+
+    @property
+    def plugins_n_ecosystem(self) -> e.P:
+        return e.P()(
+            e.H2()("Plugins and ecosystem"),
+            e.P()(
+                e.UL()(
+                    e.LI()(
+                        e.A(href="https://github.com/sayanarijit/pyramid_htmldoom")(
+                            e.B()("pyramid_htmldoom")
+                        ),
+                        e.Span()(": htmldoom rendering library plugin for Pyramid"),
+                    )
+                )
+            ),
+        )
 
     def benchmark(self, title: str, src: str, alt: str) -> e.P:
         return e.P()(e.H3()(title), e.Img(src=src, alt=alt))
@@ -154,6 +204,8 @@ class ReadMe(Component):
             self.description,
             self.badges,
             self.usage,
+            self.q_n_a,
+            self.plugins_n_ecosystem,
             self.benchmarks,
             self.contributing,
         )
