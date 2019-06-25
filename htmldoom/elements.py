@@ -45,6 +45,7 @@ __all__ = [
     "Button",
     "Canvas",
     "Caption",
+    "Center",
     "Cite",
     "Code",
     "Col",
@@ -92,6 +93,7 @@ __all__ = [
     "Meta",
     "Meter",
     "Nav",
+    "NoBr",
     "NoScript",
     "Object",
     "OL",
@@ -635,6 +637,11 @@ class Caption(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Center(_CompositeTag):
+    tagname = "center"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Cite(_CompositeTag):
     tagname = "cite"
 
@@ -867,6 +874,11 @@ class Meter(_CompositeTag):
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 class Nav(_CompositeTag):
     tagname = "nav"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class NoBr(_LeafTag):
+    tagname = "nobr"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
