@@ -27,6 +27,7 @@ __all__ = [
     "_LeafTag",
     "_SingleChildTag",
     "_CompositeTag",
+    "_new_adhoc_composite_tag",
     "A",
     "Abbr",
     "Address",
@@ -568,6 +569,18 @@ class _CompositeTag(_Tag):
 
     def __repr__(self) -> str:
         return render_element(self)
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+def _new_adhoc_composite_tag(tagname: str):
+    """Any custom composite tag, try not to use it in place of tags already available.
+
+    Example:
+        >>> _new_adhoc_composite_tag("clipboard-copy")("required", name="copy")("Copy Me")
+        <clipboard-copy required name="copy">Copy Me</clipboard-copy>
+    """
+
+    return type(tagname, (_CompositeTag,), {"tagname": tagname})
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
