@@ -916,8 +916,14 @@ class P(_CompositeTag):
     tagname = "p"
 
 
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Param(_LeafTag):
     tagname = "param"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Path(_LeafTag):
+    tagname = "path"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
