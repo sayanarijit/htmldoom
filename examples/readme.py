@@ -149,12 +149,20 @@ class ReadMe(Component):
             e.P()(
                 e.UL()(
                     e.LI()(
+                        e.A(href="https://github.com/sayanarijit/moodlmth")(
+                            e.B()("moodlmth")
+                        ),
+                        e.Span()(": Convert raw HTML pages into python source code"),
+                    )
+                ),
+                e.UL()(
+                    e.LI()(
                         e.A(href="https://github.com/sayanarijit/pyramid_htmldoom")(
                             e.B()("pyramid_htmldoom")
                         ),
                         e.Span()(": htmldoom rendering library plugin for Pyramid"),
                     )
-                )
+                ),
             ),
         )
 
