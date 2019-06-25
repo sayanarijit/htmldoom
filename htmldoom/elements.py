@@ -550,7 +550,7 @@ class _CompositeTag(_Tag):
         )
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.attrs}:{self.children}")
+        return hash("{type(self)}:{self.attrs}:{self.props}:{self.children}")
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, *children: _NaiveElementType) -> _CompositeTagType:
@@ -1310,9 +1310,8 @@ class Samp(_CompositeTag):
 class Script(_SingleChildTag):
     tagname = "script"
 
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, child: str) -> _SingleChildTagType:
-        s: Script = Script(*self.attrs, **self.props)
+        s: Script = type(self)(*self.attrs, **self.props)
         super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
         return s
 
@@ -1366,9 +1365,8 @@ class Strong(_CompositeTag):
 class Style(_SingleChildTag):
     tagname = "style"
 
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, child: str) -> _SingleChildTagType:
-        s: Style = Style(*self.attrs, **self.props)
+        s: Style = type(self)(*self.attrs, **self.props)
         super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
         return s
 
