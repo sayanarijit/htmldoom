@@ -45,6 +45,11 @@ class BaseLayout:
         return e.Title()
 
     @property
+    def html(self) -> e.HTML:
+        """Document HTML"""
+        return e.HTML()(self.head, self.body)
+
+    @property
     def head(self) -> e.Head:
         """Document head"""
         return e.Head()(self.title)
@@ -58,7 +63,7 @@ class BaseLayout:
         return self.data[name]
 
     def render(self) -> t.Tuple[e.DocType, e.HTML]:
-        return self.doctype, e.HTML()(self.head, self.body)
+        return self.doctype, self.html
 
     def __repr__(self) -> str:
         return "\n".join(map(str, self.render()))
