@@ -14,7 +14,6 @@ from html import escape
 from types import MappingProxyType
 
 __all__ = [
-    "MAX_CACHE_SIZE",
     "double_quote",
     "render_element",
     "css",
@@ -31,6 +30,9 @@ __all__ = [
     "A",
     "Abbr",
     "Address",
+    "Animate",
+    "AnimateMotion",
+    "AnimateTransform",
     "Area",
     "Article",
     "Aside",
@@ -46,39 +48,77 @@ __all__ = [
     "Canvas",
     "Caption",
     "Center",
+    "Circle",
+    "CirclePath",
     "Cite",
     "Code",
     "Col",
     "ColGroup",
+    "Color_Profile",
     "Data",
     "DataList",
     "DD",
+    "Defs",
     "Del",
+    "Desc",
     "Details",
     "DFN",
     "Dialog",
+    "Discard",
     "Div",
     "DL",
     "DT",
+    "Ellipse",
     "Em",
     "Embed",
+    "FeBlend",
+    "FeColorMatrix",
+    "FeComponentTransfer",
+    "FeComposite",
+    "FeConvolveMatrix",
+    "FeDiffuseLighting",
+    "FeDisplacementMap",
+    "FeDistantLight",
+    "FeDropShadow",
+    "FeFlood",
+    "FeFuncA",
+    "FeFuncB",
+    "FeFuncG",
+    "FeFuncR",
+    "FeGaussianBlur",
+    "FeImage",
+    "FeMerge",
+    "FeMergeNode",
+    "FeMorphology",
+    "FeOffset",
+    "FePointLight",
+    "FeSpecularLighting",
+    "FeSpotLight",
+    "FeTile",
+    "FeTurbulence",
     "FieldSet",
     "FigCaption",
     "Figure",
+    "Filter",
     "Footer",
+    "ForeignObject",
     "Form",
+    "G",
     "H1",
     "H2",
     "H3",
     "H4",
     "H5",
     "H6",
+    "Hatch",
+    "Hatchpath",
     "Head",
     "Header",
     "HR",
     "HTML",
     "I",
     "IFrame",
+    "Image",
     "Img",
     "Input",
     "Ins",
@@ -86,12 +126,18 @@ __all__ = [
     "Label",
     "Legend",
     "LI",
+    "Line",
+    "LinearGradient",
     "Link",
     "Main",
     "Map",
     "Mark",
+    "Marker",
+    "Mask",
     "Meta",
+    "Metadata",
     "Meter",
+    "Mpath",
     "Nav",
     "NoBr",
     "NoScript",
@@ -103,10 +149,15 @@ __all__ = [
     "P",
     "Param",
     "Path",
+    "Pattern",
     "Picture",
+    "Polygon",
+    "Polyline",
     "Pre",
     "Progress",
     "Q",
+    "RadialGradient",
+    "Rect",
     "RP",
     "RT",
     "Ruby",
@@ -115,20 +166,27 @@ __all__ = [
     "Script",
     "Section",
     "Select",
+    "Set",
     "Small",
+    "Solidcolor",
     "Source",
     "Span",
+    "Stop",
     "Strong",
     "Style",
     "Sub",
     "Summary",
     "Sup",
     "SVG",
+    "Switch",
+    "Symbol",
     "Table",
     "TBody",
     "TD",
     "Template",
+    "Text",
     "TextArea",
+    "TextPath",
     "TFoot",
     "TH",
     "THead",
@@ -136,9 +194,12 @@ __all__ = [
     "Title",
     "TR",
     "Track",
+    "TSpan",
     "U",
     "UL",
+    "Use",
     "Var",
+    "View",
     "Video",
     "WBr",
 ]
@@ -561,6 +622,21 @@ class Address(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Animate(_CompositeTag):
+    tagname = "animate"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class AnimateMotion(_CompositeTag):
+    tagname = "animateMotion"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class AnimateTransform(_CompositeTag):
+    tagname = "animateTransform"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Area(_LeafTag):
     tagname = "area"
 
@@ -643,6 +719,16 @@ class Center(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Circle(_CompositeTag):
+    tagname = "circle"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class CirclePath(_CompositeTag):
+    tagname = "circlePath"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Cite(_CompositeTag):
     tagname = "cite"
 
@@ -663,6 +749,11 @@ class ColGroup(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Color_Profile(_CompositeTag):
+    tagname = "color-profile"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Data(_CompositeTag):
     tagname = "data"
 
@@ -678,8 +769,18 @@ class DD(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Defs(_CompositeTag):
+    tagname = "defs"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Del(_CompositeTag):
     tagname = "del"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Desc(_CompositeTag):
+    tagname = "desc"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -698,6 +799,11 @@ class Dialog(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Discard(_CompositeTag):
+    tagname = "discard"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Div(_CompositeTag):
     tagname = "div"
 
@@ -713,6 +819,11 @@ class DT(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Ellipse(_CompositeTag):
+    tagname = "ellipse"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Em(_CompositeTag):
     tagname = "em"
 
@@ -723,13 +834,138 @@ class Embed(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeBlend(_CompositeTag):
+    tagname = "feBlend"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeColorMatrix(_CompositeTag):
+    tagname = "feColorMatrix"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeComponentTransfer(_CompositeTag):
+    tagname = "feComponentTransfer"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeComposite(_CompositeTag):
+    tagname = "feComposite"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeConvolveMatrix(_CompositeTag):
+    tagname = "feConvolveMatrix"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeDiffuseLighting(_CompositeTag):
+    tagname = "feDiffuseLighting"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeDisplacementMap(_CompositeTag):
+    tagname = "feDisplacementMap"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeDistantLight(_CompositeTag):
+    tagname = "feDistantLight"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeDropShadow(_CompositeTag):
+    tagname = "feDropShadow"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeFlood(_CompositeTag):
+    tagname = "feFlood"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeFuncA(_CompositeTag):
+    tagname = "feFuncA"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeFuncB(_CompositeTag):
+    tagname = "feFuncB"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeFuncG(_CompositeTag):
+    tagname = "feFuncG"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeFuncR(_CompositeTag):
+    tagname = "feFuncR"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeGaussianBlur(_CompositeTag):
+    tagname = "feGaussianBlur"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeImage(_CompositeTag):
+    tagname = "feImage"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeMerge(_CompositeTag):
+    tagname = "feMerge"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeMergeNode(_CompositeTag):
+    tagname = "feMergeNode"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeMorphology(_CompositeTag):
+    tagname = "feMorphology"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeOffset(_CompositeTag):
+    tagname = "feOffset"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FePointLight(_CompositeTag):
+    tagname = "fePointLight"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeSpecularLighting(_CompositeTag):
+    tagname = "feSpecularLighting"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeSpotLight(_CompositeTag):
+    tagname = "feSpotLight"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeTile(_CompositeTag):
+    tagname = "feTile"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class FeTurbulence(_CompositeTag):
+    tagname = "feTurbulence"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class FieldSet(_CompositeTag):
     tagname = "fieldset"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 class FigCaption(_CompositeTag):
-    tagname = "fieldcaption"
+    tagname = "figcaption"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -738,13 +974,28 @@ class Figure(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Filter(_CompositeTag):
+    tagname = "filter"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Footer(_CompositeTag):
     tagname = "footer"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class ForeignObject(_LeafTag):
+    tagname = "foreignObject"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Form(_CompositeTag):
     tagname = "form"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class G(_CompositeTag):
+    tagname = "g"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -778,6 +1029,16 @@ class H6(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Hatch(_CompositeTag):
+    tagname = "hatch"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Hatchpath(_CompositeTag):
+    tagname = "hatchpath"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Head(_CompositeTag):
     tagname = "head"
 
@@ -805,6 +1066,11 @@ class I(_CompositeTag):
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 class IFrame(_CompositeTag):
     tagname = "iframe"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Image(_CompositeTag):
+    tagname = "image"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -843,6 +1109,16 @@ class LI(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Line(_CompositeTag):
+    tagname = "line"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class LinearGradient(_CompositeTag):
+    tagname = "linearGradient"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Link(_LeafTag):
     tagname = "link"
 
@@ -863,13 +1139,33 @@ class Mark(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Marker(_CompositeTag):
+    tagname = "marker"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Mask(_CompositeTag):
+    tagname = "mask"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Meta(_LeafTag):
     tagname = "meta"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-class Meter(_CompositeTag):
+class Metadata(_CompositeTag):
+    tagname = "metadata"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Meter(_LeafTag):
     tagname = "meter"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Mpath(_CompositeTag):
+    tagname = "mpath"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -923,13 +1219,28 @@ class Param(_LeafTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-class Path(_LeafTag):
+class Path(_CompositeTag):
     tagname = "path"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Pattern(_CompositeTag):
+    tagname = "pattern"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 class Picture(_CompositeTag):
     tagname = "picture"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Polygon(_CompositeTag):
+    tagname = "polygon"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Polyline(_CompositeTag):
+    tagname = "polyline"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -945,6 +1256,16 @@ class Progress(_CompositeTag):
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 class Q(_CompositeTag):
     tagname = "q"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class RadialGradient(_CompositeTag):
+    tagname = "radialGradient"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Rect(_CompositeTag):
+    tagname = "rect"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -994,8 +1315,18 @@ class Select(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Set(_CompositeTag):
+    tagname = "set"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Small(_CompositeTag):
     tagname = "small"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Solidcolor(_CompositeTag):
+    tagname = "solidcolor"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -1006,6 +1337,11 @@ class Source(_LeafTag):
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 class Span(_CompositeTag):
     tagname = "span"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Stop(_CompositeTag):
+    tagname = "stop"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -1044,6 +1380,16 @@ class SVG(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Switch(_CompositeTag):
+    tagname = "switch"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class Symbol(_CompositeTag):
+    tagname = "symbol"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Table(_CompositeTag):
     tagname = "table"
 
@@ -1064,8 +1410,18 @@ class Template(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Text(_CompositeTag):
+    tagname = "text"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class TextArea(_SingleChildTag):
     tagname = "textarea"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class TextPath(_CompositeTag):
+    tagname = "textPath"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -1104,6 +1460,11 @@ class Track(_LeafTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class TSpan(_CompositeTag):
+    tagname = "tspan"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class U(_CompositeTag):
     tagname = "u"
 
@@ -1114,8 +1475,18 @@ class UL(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
+class Use(_CompositeTag):
+    tagname = "use"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
 class Var(_CompositeTag):
     tagname = "var"
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+class View(_CompositeTag):
+    tagname = "view"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
