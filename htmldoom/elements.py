@@ -878,7 +878,7 @@ class Nav(_CompositeTag):
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-class NoBr(_LeafTag):
+class NoBr(_CompositeTag):
     tagname = "nobr"
 
 
