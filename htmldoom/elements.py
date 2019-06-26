@@ -205,11 +205,7 @@ __all__ = [
     "WBr",
 ]
 
-# I have no idea why it performs best with worst hash functions. TODO: some research.
 MAX_CACHE_SIZE = 12800
-
-_ElementType = t.Union["_RawText", "_Text", "_Declaration", "_Tag"]  # type: ignore
-_NaiveElementType = t.Union[str, bytes, _ElementType]  # type: ignore
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -224,7 +220,7 @@ def double_quote(txt: str) -> str:
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-def render_element(element: _ElementType) -> str:
+def render_element(element):
     """Render any element.
     
     Usage:
@@ -255,7 +251,7 @@ def render_element(element: _ElementType) -> str:
     )
 
 
-def css(**code: t.Dict[str, t.Union[str, t.Collection[str]]]) -> str:
+def css(**code: object) -> str:
     """Helps rendering CSS code.
     
     Usage:
@@ -297,11 +293,13 @@ class _RawText:
         <div>&nbsp;</div>
     """
 
-    __slots__ = ["value"]
+    __slots__ = ["value", "_hash"]
 
     def __init__(self, value: str) -> None:
         self.value: str
+        self._hash: str
         super().__setattr__("value", value)
+        super().__setattr__("_hash", hash(f"{type(self)}({self.value})"))
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
@@ -310,7 +308,7 @@ class _RawText:
         return isinstance(other, type(self)) and self.value == other.value
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.value}")
+        return self._hash
 
     def __repr__(self) -> str:
         return self.value
@@ -325,11 +323,13 @@ class _Text:
         foo &amp;nbsp;&lt;p&gt;
     """
 
-    __slots__ = ["value"]
+    __slots__ = ["value", "_hash"]
 
     def __init__(self, value: str) -> None:
         self.value: str
+        self._hash: int
         super().__setattr__("value", value)
+        super().__setattr__("_hash", hash(f"{type(self)}({self.value})"))
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
@@ -338,7 +338,7 @@ class _Text:
         return isinstance(other, type(self)) and self.value == other.value
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.value}")
+        return self._hash
 
     def __repr__(self) -> str:
         return escape(self.value)
@@ -359,11 +359,12 @@ class _Comment(_Declaration):
         <!-- Commenting --&gt; -->
     """
 
-    __slots__ = ["value"]
+    __slots__ = ["value", "_hash"]
 
     def __init__(self, value: str) -> None:
         self.value: str
         super().__setattr__("value", value)
+        super().__setattr__("_hash", hash(f"{type(self)}({self.value})"))
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
@@ -372,7 +373,7 @@ class _Comment(_Declaration):
         return isinstance(other, type(self)) and self.value == other.value
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.value}")
+        return self._hash
 
     def __repr__(self) -> str:
         return f"<!-- {escape(self.value)} -->"
@@ -390,11 +391,12 @@ class DocType(_Declaration):
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
     """
 
-    __slots__ = ["attrs"]
+    __slots__ = ["attrs", "_hash"]
 
     def __init__(self, *attrs: str) -> None:
         self.attrs: t.Tuple[str]
         super().__setattr__("attrs", attrs)
+        super().__setattr__("_hash", hash(f"{type(self)}({self.attrs})"))
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
@@ -403,7 +405,7 @@ class DocType(_Declaration):
         return isinstance(other, type(self)) and self.attrs == other.attrs
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.attrs}")
+        return self._hash
 
     def __repr__(self) -> str:
         return "<!DOCTYPE {}>".format(
@@ -417,15 +419,17 @@ class DocType(_Declaration):
 class _Tag:
     """Base class for all tags."""
 
-    __slots__ = ["attrs", "props"]
+    __slots__ = ["attrs", "props", "_hash"]
 
     tagname: str = ""
 
     def __init__(self, *attrs: str, **props: str) -> None:
         self.attrs: t.Tuple[str]
         self.props: t.Mapping[str, str]
+        self._hash: int
         super().__setattr__("attrs", attrs)
         super().__setattr__("props", MappingProxyType(props))
+        super().__setattr__("_hash", hash(f"{type(self)}({self.attrs},{self.props})"))
 
     def __setattr__(self, name: str, value: object) -> None:
         raise AttributeError("can't set attribute")
@@ -438,7 +442,7 @@ class _Tag:
         )
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.attrs}:{self.props}")
+        return self._hash
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def _repr(self) -> str:
@@ -476,9 +480,6 @@ class _LeafTag(_Tag):
     pass
 
 
-_SingleChildTagType = t.TypeVar("_SingleChildTagType", bound="_SingleChildTag")
-
-
 class _SingleChildTag(_Tag):
     """Derive from this class to create tag that can have only one child.
     
@@ -490,12 +491,18 @@ class _SingleChildTag(_Tag):
         <mytag x y="z">foo</mytag>
     """
 
-    __slots__ = ["attrs", "props", "child"]
+    __slots__ = ["attrs", "props", "child", "_hash"]
 
     def __init__(self, *attrs: str, **props: str) -> None:
-        self.child: _ElementType
+        self.child: object
         super().__init__(*attrs, **props)
         super().__class__.__setattr__(self, "child", _Text(""))
+        super().__class__.__setattr__(
+            self, "_hash", hash(f"{type(self)}({self.attrs},{self.props},1)")
+        )
+
+    def __hash__(self) -> int:
+        return self._hash
 
     def __eq__(self, other: object) -> bool:
         return (
@@ -505,11 +512,8 @@ class _SingleChildTag(_Tag):
             and self.child == other.child
         )
 
-    def __hash__(self) -> int:
-        return hash("{type(self)}:{self.attrs}:{self.props}:{self.child}")
-
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __call__(self, child: _NaiveElementType) -> _SingleChildTagType:
+    def __call__(self, child: object) -> object:
         _child: _NaiveElementType = child
         if isinstance(child, str):
             _child = _Text(child)
@@ -542,9 +546,6 @@ class _SingleChildTag(_Tag):
         return self._repr()
 
 
-_CompositeTagType = t.TypeVar("_CompositeTagType", bound="_CompositeTag")
-
-
 class _CompositeTag(_Tag):
     """Derive from this class to create tag that can have children.
     
@@ -556,14 +557,19 @@ class _CompositeTag(_Tag):
         <mytag x y="z">foo <mytag>bar</mytag></mytag>
     """
 
-    __slots__ = ["attrs", "props", "children"]
+    __slots__ = ["attrs", "props", "children", "_hash"]
 
-    def __init__(self: _CompositeTagType, *attrs: str, **props: str) -> None:
+    def __init__(self, *attrs: str, **props: str) -> None:
         self.attrs: t.Tuple[str]
         self.props: t.Mapping[str, str]
-        self.children: t.Tuple[_ElementType]
+        self.children: t.Tuple[object]
         super().__init__(*attrs, **props)
         super().__class__.__setattr__(self, "children", tuple())
+        super().__class__.__setattr__(
+            self,
+            "_hash",
+            hash(f"{type(self)}({self.attrs},{self.props},{len(self.children)})"),
+        )
 
     def __eq__(self, other: object) -> bool:
         return (
@@ -574,11 +580,11 @@ class _CompositeTag(_Tag):
         )
 
     def __hash__(self) -> int:
-        return hash("{type(self)}:{self.attrs}:{self.props}:{self.children}")
+        return self._hash
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def __call__(self, *children: _NaiveElementType) -> _CompositeTagType:
-        _children: t.List[_ElementType] = []
+    def __call__(self, *children: object) -> object:
+        _children: t.List[object] = []
         for c in children:
             if isinstance(c, str):
                 _children.append(_Text(c))
@@ -1338,7 +1344,7 @@ class Samp(_CompositeTag):
 class Script(_SingleChildTag):
     tagname = "script"
 
-    def __call__(self, child: str) -> _SingleChildTagType:
+    def __call__(self, child: str) -> object:
         s: Script = type(self)(*self.attrs, **self.props)
         super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
         return s
@@ -1393,7 +1399,7 @@ class Strong(_CompositeTag):
 class Style(_SingleChildTag):
     tagname = "style"
 
-    def __call__(self, child: str) -> _SingleChildTagType:
+    def __call__(self, child: str) -> object:
         s: Style = type(self)(*self.attrs, **self.props)
         super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
         return s

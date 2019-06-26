@@ -49,7 +49,7 @@ def test_DocType():
 
 
 def test_Br():
-    assert repr(e.Br()) == "<br />"
+    assert str(e.Br()) == "<br />"
 
 
 def test_A():
