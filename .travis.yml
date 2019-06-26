@@ -9,8 +9,6 @@ install:
   - pip install -e '.[testing]'
 script:
   - black --check .
-  - mypy --no-incremental htmldoom || true  # TODO: fix the troublesome typing
-  - typecov 100 .typecov/report/linecount.txt
   - pytest --cov=htmldoom
 after_success:
   - bash <(curl -s https://codecov.io/bash)

@@ -99,7 +99,7 @@ class Component:
     def __getitem__(self, name: object) -> object:
         return self.data[name]
 
-    def render(self) -> e._ElementType:
+    def render(self) -> object:
         return e._Text(str(self.data))
 
     def __repr__(self) -> str:

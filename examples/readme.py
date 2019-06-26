@@ -53,33 +53,58 @@ class ReadMe(Component):
     @property
     def example1(self) -> e.P:
         return e.P()(
+            e.H2()("A basic tag"),
             e.Pre()(
                 ">>> from htmldoom import elements as e\n"
                 ">>> \n"
                 """>>> e.P(style=e.style(color="red"))("This is a paragraph")\n"""
                 """<p style="color:'red';">This is a paragraph</p>"""
-            )
+            ),
         )
 
     @property
     def example2(self) -> e.P:
         return e.P()(
+            e.H2()("A builtin layout"),
             e.Pre()(
                 ">>> from htmldoom import elements as e\n"
                 ">>> from htmldoom.layouts import BaseLayout\n"
                 ">>> \n"
                 ">>> class MyLayout(BaseLayout):\n"
+                "... \n"
                 "...     @property\n"
                 "...     def title(self) -> e.Title:\n"
                 '...         return e.Title()(self["title"])\n'
+                "... \n"
                 "...     @property\n"
                 "...     def body(self) -> e.Body:\n"
-                """...         return e.Body()(f"Welcome {self['user']['name']}")\n\n"""
+                """...         return e.Body()(f"Welcome {self['user']['name']}")\n"""
                 "... \n"
-                """>>> MyLayout({"title": "foo", "user": {"name": "bar"}})\n"""
+                '>>> MyLayout({"title": "foo", "user": {"name": "bar"}})\n'
                 "<!DOCTYPE html>\n"
                 "<html><head><title>foo</title></head><body>Welcome bar</body></html>"
-            )
+            ),
+        )
+
+    @property
+    def example3(self) -> e.P:
+        return e.P()(
+            e.H2()("A functional style foreach loop with a switch case"),
+            e.Pre()(
+                ">>> from htmldoom import elements as e\n"
+                ">>> from htmldoom import functions as fn\n"
+                ">>> \n"
+                '>>> fn.foreach(["good", "bad", "evil"])(\n'
+                "...     lambda x: fn.switch({\n"
+                '...         x == "good": lambda: e.Span(style="color: green")(f"this is {x}"),\n'
+                '...         x == "bad": lambda: e.Span(style="color: yellow")(f"this is {x}"),\n'
+                '...         fn.Case.DEFAULT: lambda: e.Span(style="color: red")(f"this is {x}"),\n'
+                "...     })\n"
+                "... )\n"
+                '(<span style="color: green">this is good</span>,\n'
+                ' <span style="color: yellow">this is bad</span>,\n'
+                ' <span style="color: red">this is evil</span>)\n'
+            ),
         )
 
     @property
@@ -92,7 +117,13 @@ class ReadMe(Component):
 
     @property
     def usage(self) -> e.P:
-        return e.P()(e.H2()("Usage"), self.example1, self.example2, self.more_examples)
+        return e.P()(
+            e.H2()("Usage"),
+            self.example1,
+            self.example2,
+            self.example3,
+            self.more_examples,
+        )
 
     @property
     def q_n_a(self) -> e.P:
@@ -117,7 +148,7 @@ class ReadMe(Component):
                 ),
                 e.Br(),
                 (
-                    "All the elements and attributes in htmldoom is supposed to be immutable"
+                    "All the elements and attributes in htmldoom are supposed to be immutable"
                     " (unless you want to hack it for some reason). Being immutable enables them"
                     " to be cachable and sharable making use of the "
                 ),

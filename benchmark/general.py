@@ -3,17 +3,7 @@ from jinja2 import Template
 from mako.template import Template as MakoTemplate
 
 from htmldoom import elements as e
-
-
-def odd_paragraphs(n):
-    paras = []
-    for i in range(1, n + 1):
-        if i % 2 == 0:
-            paras.append(e.P(style="color: blue")(f"{i} is even"))
-        else:
-            paras.append(e.P(style="color: red")(f"{i} is odd"))
-    return paras
-
+from htmldoom import functions as fn
 
 j2tmpl = """\
 <html>
@@ -71,25 +61,37 @@ makotmpl = """\
 
 
 def htmldoom(n):
-    e.HTML()(
-        e.Head()(e.Title()("benchmark test")),
-        e.Body()(
-            e.Div()(
-                e.Div()(f"Printing odd paragraphs with till {n}"),
-                e.Div()(*odd_paragraphs(n)),
-                e.Footer()("This is it then..."),
-            )
-        ),
+    return str(
+        e.HTML()(
+            e.Head()(e.Title()("benchmark test")),
+            e.Body()(
+                e.Div()(
+                    e.Div()(f"Printing odd paragraphs with till {n}"),
+                    *fn.foreach(range(n))(
+                        lambda i: fn.switch(
+                            {
+                                i % 2
+                                == 0: lambda: e.P(style="color: blue")(f"{i} is even"),
+                                fn.Case.DEFAULT: lambda: e.P(style="color: red")(
+                                    f"{i} is odd"
+                                ),
+                            }
+                        )
+                    ),
+                    e.Footer()("This is it then..."),
+                )
+            ),
+        )
     )
 
 
 def jinja2(n):
-    Template(j2tmpl).render(n=n)
+    return Template(j2tmpl).render(n=n)
 
 
 def chameleon(n):
-    PageTemplate(chameltmpl)(n=n)
+    return PageTemplate(chameltmpl)(n=n)
 
 
 def mako(n):
-    MakoTemplate(makotmpl).render(n=n)
+    return MakoTemplate(makotmpl).render(n=n)

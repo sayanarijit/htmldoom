@@ -24,7 +24,6 @@ testing_requires = [
     "black>=19.3b0",
     "mypy>=0.710",
     "lxml>=4.3.4",
-    "typecov>=0.2.1",
 ]
 dev_requires = testing_requires + ["tox>=3.12.1"]
 
