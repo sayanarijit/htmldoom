@@ -131,3 +131,9 @@ def test_equality():
     assert e._Tag("x") == e._Tag("x")
     assert e._Tag("x") != e._Tag("xy")
     assert hash(e._Tag("x")) == hash(e._Tag("x"))
+
+
+def test_adhoc_composite_tag():
+    Tag = e._new_adhoc_composite_tag("tag")
+    assert Tag.tagname == "tag"
+    assert str(Tag("x", y="z")("foo", "bar")) == '<tag x y="z">foobar</tag>'

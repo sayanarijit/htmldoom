@@ -463,7 +463,15 @@ class _Tag:
 
 
 class _LeafTag(_Tag):
-    """A leaf tag cannot have children."""
+    """Derive from this class to create tag that cannot have children.
+
+    Example:
+        >>> class MyTag(_LeafTag):
+        ...     tagname = "mytag"
+        ... 
+        >>> MyTag("x", y="z")
+        <mytag x y="z" />
+    """
 
     pass
 
@@ -472,7 +480,15 @@ _SingleChildTagType = t.TypeVar("_SingleChildTagType", bound="_SingleChildTag")
 
 
 class _SingleChildTag(_Tag):
-    """A single child tag can have only one child."""
+    """Derive from this class to create tag that can have only one child.
+    
+    Example:
+        >>> class MyTag(_SingleChildTag):
+        ...     tagname = "mytag"
+        ... 
+        >>> MyTag("x", y="z")("foo")
+        <mytag x y="z">foo</mytag>
+    """
 
     __slots__ = ["attrs", "props", "child"]
 
@@ -530,7 +546,15 @@ _CompositeTagType = t.TypeVar("_CompositeTagType", bound="_CompositeTag")
 
 
 class _CompositeTag(_Tag):
-    """A composite tag can have children."""
+    """Derive from this class to create tag that can have children.
+    
+    Example:
+        >>> class MyTag(_SingleChildTag):
+        ...     tagname = "mytag"
+        ... 
+        >>> MyTag("x", y="z")("foo ", MyTag()("bar"))
+        <mytag x y="z">foo <mytag>bar</mytag></mytag>
+    """
 
     __slots__ = ["attrs", "props", "children"]
 
@@ -573,11 +597,15 @@ class _CompositeTag(_Tag):
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 def _new_adhoc_composite_tag(tagname: str):
-    """Any custom composite tag, try not to use it in place of tags already available.
+    """Use it to create any custom composite tag when you don't have any other option.
+
+    A better way to create custom tag is to subclass base tags like `_CompositeTag`,
+    `_LeafTag`, or `_SingleChildTag`.
 
     Example:
-        >>> _new_adhoc_composite_tag("clipboard-copy")("required", name="copy")("Copy Me")
-        <clipboard-copy required name="copy">Copy Me</clipboard-copy>
+        >>> Clipboard_Copy = _new_adhoc_composite_tag("clipboard-copy")
+        >>> Clipboard_Copy(value="foo")("Copy Me")
+        <clipboard-copy value="foo">Copy Me</clipboard-copy>
     """
 
     return type(tagname, (_CompositeTag,), {"tagname": tagname})
