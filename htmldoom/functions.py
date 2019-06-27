@@ -8,7 +8,8 @@ Example:
     ...     lambda x: fn.switch({
     ...         x == "good": lambda: e.Span(style="color: green")(f"this is {x}"),
     ...         x == "bad": lambda: e.Span(style="color: yellow")(f"this is {x}"),
-    ...         fn.Case.DEFAULT: lambda: e.Span(style="color: red")(f"this is {x}"),
+    ...         x == "evil": lambda: e.Span(style="color: red")(f"this is {x}"),
+    ...         fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),
     ...     })
     ... ))
     (<span style="color: green">this is good</span>,
@@ -28,32 +29,29 @@ class Case:
     """Builtin switch cases to help with the switch function."""
 
     class DEFAULT:
-        """The default switch case.
-        
-        Example:
-            >>> x = 0
-            >>> 
-            >>> switch({
-            ...     x == 1: lambda: 1,
-            ...     Case.DEFAULT: lambda: 0,
-            ... })
-            0
-        """
+        """The default switch case."""
 
         pass
+
+
+class Error:
+    """Helps raising errors from lambdas."""
+
+    @staticmethod
+    def throw(error: Exception):
+        raise error
 
 
 def switch(cases):
     """A dirty implementation of the missing switch case.
 
     Example:
-        >>> x = 0
-        >>> 
-        >>> switch({
-        ...     x == 1: lambda: 1,
-        ...     Case.DEFAULT: lambda: 0,
-        ... })
-        0
+        >>> (lambda x: switch({
+        ...     x == 0: lambda: "zero",
+        ...     x == 1: lambda: "one",
+        ...     Case.DEFAULT: lambda: Error.throw(ValueError(x)),
+        ... }))(0)
+        'zero'
     """
     return cases.get(True, cases[Case.DEFAULT])()
 

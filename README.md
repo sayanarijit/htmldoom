@@ -23,7 +23,8 @@
 ...     lambda x: fn.switch({
 ...         x == &quot;good&quot;: lambda: e.Span(style=&quot;color: green&quot;)(f&quot;this is {x}&quot;),
 ...         x == &quot;bad&quot;: lambda: e.Span(style=&quot;color: yellow&quot;)(f&quot;this is {x}&quot;),
-...         fn.Case.DEFAULT: lambda: e.Span(style=&quot;color: red&quot;)(f&quot;this is {x}&quot;),
+...         x == &quot;evil&quot;: lambda: e.Span(style=&quot;color: red&quot;)(f&quot;this is {x}&quot;),
+...         fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),
 ...     })
 ... ))
 (&lt;span style=&quot;color: green&quot;&gt;this is good&lt;/span&gt;,

@@ -6,8 +6,15 @@ from htmldoom import functions as fn
 
 
 def test_switch_case():
-    assert fn.switch({True: lambda: 1, fn.Case.DEFAULT: lambda: 0}) == 1
+    assert (
+        fn.switch(
+            {True: lambda: 1, fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError)}
+        )
+        == 1
+    )
     assert fn.switch({False: lambda: 1, fn.Case.DEFAULT: lambda: 0}) == 0
+    with pytest.raises(ValueError):
+        fn.switch({fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError("x"))})
 
 
 # Loop

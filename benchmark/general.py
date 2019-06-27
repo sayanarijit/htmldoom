@@ -1,3 +1,5 @@
+import sys
+
 from chameleon import PageTemplate
 from jinja2 import Template
 from mako.template import Template as MakoTemplate
@@ -95,3 +97,19 @@ def chameleon(n):
 
 def mako(n):
     return MakoTemplate(makotmpl).render(n=n)
+
+
+if __name__ == "__main__":
+    engine, count = sys.argv[1:]
+    count = int(count)
+    (
+        lambda x: fn.switch(
+            {
+                x == "htmldoom": lambda: htmldoom(count),
+                x == "mako": lambda: mako(count),
+                x == "jinja2": lambda: jinja2(count),
+                x == "chameleon": lambda: chameleon(count),
+                fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),
+            }
+        )
+    )(engine)
