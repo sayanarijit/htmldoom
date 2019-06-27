@@ -4,8 +4,8 @@ from chameleon import PageTemplate
 from jinja2 import Template
 from mako.template import Template as MakoTemplate
 
-from htmldoom import elements as e
-from htmldoom import functions as fn
+from htmldoom.elements import HTML, Body, Div, Footer, Head, P, Title
+from htmldoom.functions import Case, Error, switch
 
 j2tmpl = """\
 <html>
@@ -65,17 +65,17 @@ makotmpl = """\
 def htmldoom(n):
     def even_or_odd(i):
         if i % 2 == 0:
-            return e.P(style="color: blue")(f"{i} is even")
-        return e.P(style="color: red")(f"{i} is odd")
+            return P(style="color: blue")(f"{i} is even")
+        return P(style="color: red")(f"{i} is odd")
 
     return str(
-        e.HTML()(
-            e.Head()(e.Title()("benchmark test")),
-            e.Body()(
-                e.Div()(
-                    e.Div()(f"Printing odd paragraphs with till {n}"),
+        HTML()(
+            Head()(Title()("benchmark test")),
+            Body()(
+                Div()(
+                    Div()(f"Printing odd paragraphs with till {n}"),
                     *map(even_or_odd, range(n)),
-                    e.Footer()("This is it then..."),
+                    Footer()("This is it then..."),
                 )
             ),
         )
@@ -98,13 +98,13 @@ if __name__ == "__main__":
     engine, count = sys.argv[1:]
     count = int(count)
     (
-        lambda x: fn.switch(
+        lambda x: switch(
             {
                 x == "htmldoom": lambda: htmldoom(count),
                 x == "mako": lambda: mako(count),
                 x == "jinja2": lambda: jinja2(count),
                 x == "chameleon": lambda: chameleon(count),
-                fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),
+                Case.DEFAULT: lambda: Error.throw(ValueError(x)),
             }
         )
     )(engine)
