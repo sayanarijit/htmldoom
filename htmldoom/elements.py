@@ -2,15 +2,15 @@
 
 Example:
     >>> from htmldoom import elements as e
-    >>> e.P(style=e.style(color="red"))("This is a paragraph")
+    >>> print(e.P(style=e.style(color="red"))("This is a paragraph"))
     <p style="color: 'red';">This is a paragraph</p>
 """
 
+import builtins
 import re
-import typing as t
-from collections import namedtuple
 from functools import lru_cache
 from html import escape
+from keyword import kwlist
 from types import MappingProxyType
 
 __all__ = [
@@ -207,6 +207,8 @@ __all__ = [
 
 MAX_CACHE_SIZE = 12800
 
+RESERVED_KEYWORDS: set = set(dir(builtins)).union(kwlist)
+
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 def double_quote(txt: str) -> str:
@@ -220,35 +222,58 @@ def double_quote(txt: str) -> str:
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-def render_element(element):
-    """Render any element.
-    
-    Usage:
-        >>> render_element(A(href="#"))
-        '<a href="#"></a>'
-        >>> 
-        >>> render_element(A(href="#")("foo"))
-        '<a href="#">foo</a>'
-    """
-    if not isinstance(element, _CompositeTag):
-        return str(element)
+def fmt_prop(key: str, val: str) -> str:
+    """Format a key-value pair for an HTML tag."""
+    if val is None:
+        if re.sub("[a-zA-Z_]", "", key):
+            return double_quote(key)
+        return key
+    return f"{key}={double_quote(val)}"
 
-    return "<{0}{1}{2}>{3}</{0}>".format(
-        element.tagname,
-        " "
-        + (
-            " ".join(
-                double_quote(x) if re.sub(r"[a-zA-Z0-9]", "", x) else x
-                for x in element.attrs
-            )
-        )
-        if element.attrs
-        else "",
-        " " + (" ".join(f"{k}={double_quote(element.props[k])}" for k in element.props))
-        if element.props
-        else "",
-        "".join(map(render_element, element.children)),
-    )
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+def fmt_props(*props: tuple) -> str:
+    """Format all key-value pairs for an HTML tag."""
+    if not props:
+        return ""
+
+    return " " + (" ".join(fmt_prop(*x) for x in props))
+
+
+@lru_cache(maxsize=MAX_CACHE_SIZE)
+def tmf_props(**props: str) -> str:
+    """Format all key value pairs for python repr"""
+
+    if not props:
+        return ""
+
+    use_expansion = False
+    attrs = []
+    props_ = {}
+
+    for k, v in props.items():
+        if not v:
+            attrs.append(k)
+            continue
+        props_[k] = v
+        if not use_expansion and (
+            k in RESERVED_KEYWORDS or re.sub(r"[a-zA-Z_]", "", k)
+        ):
+            use_expansion = True
+
+    _attrs = f"{str(attrs).lstrip('[').rstrip(']')}"
+
+    if not props_:
+        return _attrs
+
+    _props = f"**{props_}"
+    if not use_expansion:
+        _props = ", ".join(f"{k}={repr(v)}" for k, v in props_.items())
+
+    if not attrs:
+        return _props
+
+    return f"{_attrs}, {_props}"
 
 
 def css(**code: object) -> str:
@@ -264,7 +289,7 @@ def css(**code: object) -> str:
     return "".join(f"{k}{{{style(**(code[k]))}}}" for k in code)
 
 
-def style(**code: t.Union[str, t.Collection[str]]) -> str:
+def style(**code: object) -> str:
     """Use it to render styles.
     
     Usage:
@@ -284,67 +309,86 @@ def style(**code: t.Union[str, t.Collection[str]]) -> str:
     )
 
 
+class _DOMCitizen:
+    """The base class for all the objects that resides in a DOM."""
+
+    __slots__ = ["_hash", "html"]
+
+    def __init__(self):
+        self._hash: int
+        self.html: str
+
+    def _set_dom_properties(self, html) -> None:
+        super().__setattr__("_hash", hash(html))
+        super().__setattr__("html", html)
+
+    def _setattr(self, name: str, value: object) -> None:
+        super().__setattr__(name, value)
+
+    def prefixed_repr(self, preix="") -> str:  # pragma: nocover
+        """Usefull to generate Python code from HTML.
+
+        Will work when __repr__ is implemented.
+        """
+        return f"{prefix}repr(self)"
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self)) and self.html == other.html
+
+    def __hash__(self) -> int:
+        return self._hash
+
+    def __setattr__(self, name: str, value: object) -> None:
+        raise AttributeError("can't set attribute")
+
+    def __repr__(self) -> str:  # pragma: nocover
+        raise NotImplementedError()
+
+    def __str__(self) -> str:
+        return self.html
+
+
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-class _RawText:
+class _RawText(_DOMCitizen):
     """Use it for unescaped text.
     
     Usage:
-        >>> _RawText("<div>&nbsp;</div>")
+        >>> print(_RawText("<div>&nbsp;</div>"))
         <div>&nbsp;</div>
     """
 
-    __slots__ = ["value", "_hash"]
+    __slots__ = ["value"]
 
     def __init__(self, value: str) -> None:
         self.value: str
-        self._hash: str
-        super().__setattr__("value", value)
-        super().__setattr__("_hash", hash(f"{type(self)}({self.value})"))
-
-    def __setattr__(self, name: str, value: object) -> None:
-        raise AttributeError("can't set attribute")
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, type(self)) and self.value == other.value
-
-    def __hash__(self) -> int:
-        return self._hash
+        self._setattr("value", value)
+        self._set_dom_properties(html=value)
 
     def __repr__(self) -> str:
-        return self.value
+        return repr(self.value.encode())
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
-class _Text:
+class _Text(_DOMCitizen):
     """Use it for escaped texts.
     
     Usage:
-        >>> _Text("foo &nbsp;<p>")
+        >>> print(_Text("foo &nbsp;<p>"))
         foo &amp;nbsp;&lt;p&gt;
     """
 
-    __slots__ = ["value", "_hash"]
+    __slots__ = ["value"]
 
     def __init__(self, value: str) -> None:
         self.value: str
-        self._hash: int
-        super().__setattr__("value", value)
-        super().__setattr__("_hash", hash(f"{type(self)}({self.value})"))
-
-    def __setattr__(self, name: str, value: object) -> None:
-        raise AttributeError("can't set attribute")
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, type(self)) and self.value == other.value
-
-    def __hash__(self) -> int:
-        return self._hash
+        self._setattr("value", value)
+        self._set_dom_properties(html=escape(value))
 
     def __repr__(self) -> str:
-        return escape(self.value)
+        return repr(self.value)
 
 
-class _Declaration:
+class _Declaration(_DOMCitizen):
     """All declarations such as comments, doctypes etc. Do not use it directly."""
 
     pass
@@ -355,115 +399,57 @@ class _Comment(_Declaration):
     """Use it to declare HTML comments: <!-- -->.
     
     Usage:
-        >>> _Comment("Commenting -->")
+        >>> print(_Comment("Commenting -->"))
         <!-- Commenting --&gt; -->
     """
 
-    __slots__ = ["value", "_hash"]
+    __slots__ = ["value"]
 
     def __init__(self, value: str) -> None:
+        super().__init__()
         self.value: str
-        super().__setattr__("value", value)
-        super().__setattr__("_hash", hash(f"{type(self)}({self.value})"))
-
-    def __setattr__(self, name: str, value: object) -> None:
-        raise AttributeError("can't set attribute")
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, type(self)) and self.value == other.value
-
-    def __hash__(self) -> int:
-        return self._hash
+        self._setattr("value", value)
+        self._set_dom_properties(html=f"<!-- {escape(value)} -->")
 
     def __repr__(self) -> str:
-        return f"<!-- {escape(self.value)} -->"
+        return f"{self.__class__.__name__}({repr(self.value)})"
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
 class DocType(_Declaration):
     """The DOCTYPE declaration: <!DOCTYPE>.
     
     Usage:
-        >>> DocType("html")
+        >>> print(DocType("html"))
         <!DOCTYPE html>
         >>> 
-        >>> DocType("HTML", "PUBLIC", "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd")
+        >>> print(DocType("HTML", "PUBLIC", "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"))
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
     """
 
-    __slots__ = ["attrs", "_hash"]
+    __slots__ = ["attrs"]
 
     def __init__(self, *attrs: str) -> None:
-        self.attrs: t.Tuple[str]
-        super().__setattr__("attrs", attrs)
-        super().__setattr__("_hash", hash(f"{type(self)}({self.attrs})"))
-
-    def __setattr__(self, name: str, value: object) -> None:
-        raise AttributeError("can't set attribute")
-
-    def __eq__(self, other: object) -> bool:
-        return isinstance(other, type(self)) and self.attrs == other.attrs
-
-    def __hash__(self) -> int:
-        return self._hash
+        super().__init__()
+        self.props: MappingProxyType
+        self._setattr("props", MappingProxyType({x: None for x in attrs}))
+        self._set_dom_properties(html=f"<!DOCTYPE{fmt_props(*self.props.items())}>")
 
     def __repr__(self) -> str:
-        return "<!DOCTYPE {}>".format(
-            " ".join(
-                double_quote(x) if re.sub(r"[a-zA-Z0-9]", "", x) else x
-                for x in self.attrs
-            )
-        )
+        return f"{self.__class__.__name__}({tmf_props(**self.props)})"
 
 
-class _Tag:
+class _Tag(_DOMCitizen):
     """Base class for all tags."""
 
-    __slots__ = ["attrs", "props", "_hash"]
+    __slots__ = ["attrs", "props"]
 
-    tagname: str = ""
+    tagname: str
 
     def __init__(self, *attrs: str, **props: str) -> None:
-        self.attrs: t.Tuple[str]
-        self.props: t.Mapping[str, str]
-        self._hash: int
-        super().__setattr__("attrs", attrs)
-        super().__setattr__("props", MappingProxyType(props))
-        super().__setattr__("_hash", hash(f"{type(self)}({self.attrs},{self.props})"))
-
-    def __setattr__(self, name: str, value: object) -> None:
-        raise AttributeError("can't set attribute")
-
-    def __eq__(self, other: object) -> bool:
-        return (
-            isinstance(other, type(self))
-            and self.attrs == other.attrs
-            and self.props == other.props
+        self.props: MappingProxyType
+        self._setattr(
+            "props", MappingProxyType(dict({x: None for x in attrs}, **props))
         )
-
-    def __hash__(self) -> int:
-        return self._hash
-
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def _repr(self) -> str:
-        return "<{}{}{} />".format(
-            self.tagname,
-            " "
-            + (
-                " ".join(
-                    double_quote(x) if re.sub(r"[a-zA-Z0-9]", "", x) else x
-                    for x in self.attrs
-                )
-            )
-            if self.attrs
-            else "",
-            " " + (" ".join(f"{k}={double_quote(self.props[k])}" for k in self.props))
-            if self.props
-            else "",
-        )
-
-    def __repr__(self) -> str:
-        return self._repr()
 
 
 class _LeafTag(_Tag):
@@ -473,11 +459,18 @@ class _LeafTag(_Tag):
         >>> class MyTag(_LeafTag):
         ...     tagname = "mytag"
         ... 
-        >>> MyTag("x", y="z")
+        >>> print(MyTag("x", y="z"))
         <mytag x y="z" />
     """
 
-    pass
+    def __init__(self, *attrs: str, **props) -> None:
+        super().__init__(*attrs, **props)
+        self._set_dom_properties(
+            html=f"<{self.tagname}{fmt_props(*self.props.items())} />"
+        )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({tmf_props(**self.props)})"
 
 
 class _SingleChildTag(_Tag):
@@ -487,63 +480,45 @@ class _SingleChildTag(_Tag):
         >>> class MyTag(_SingleChildTag):
         ...     tagname = "mytag"
         ... 
-        >>> MyTag("x", y="z")("foo")
+        >>> print(MyTag("x", y="z")("foo"))
         <mytag x y="z">foo</mytag>
     """
 
-    __slots__ = ["attrs", "props", "child", "_hash"]
+    __slots__ = ["child"]
 
-    def __init__(self, *attrs: str, **props: str) -> None:
-        self.child: object
+    def __init__(self, *attrs: str, **props) -> None:
         super().__init__(*attrs, **props)
-        super().__class__.__setattr__(self, "child", _Text(""))
-        super().__class__.__setattr__(
-            self, "_hash", hash(f"{type(self)}({self.attrs},{self.props},1)")
-        )
-
-    def __hash__(self) -> int:
-        return self._hash
-
-    def __eq__(self, other: object) -> bool:
-        return (
-            isinstance(other, type(self))
-            and self.attrs == other.attrs
-            and self.props == other.props
-            and self.child == other.child
+        self.child: object
+        self._setattr("child", _Text(""))
+        self._set_dom_properties(
+            html=f"<{self.tagname}{fmt_props(*self.props.items())}>{self.child}</{self.tagname}>"
         )
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, child: object) -> object:
-        _child: _NaiveElementType = child
+        _child: object = child
         if isinstance(child, str):
             _child = _Text(child)
         elif isinstance(child, bytes):
             _child = _RawText(child.decode("utf-8"))
-        tag = type(self)(*self.attrs, **self.props)
-        super(type(tag), tag).__class__.__setattr__(tag, "child", _child)
+
+        tag = type(
+            self.__class__.__name__,
+            self.__class__.__bases__,
+            self.__class__.__dict__.copy(),
+        )(**self.props)
+        tag._setattr("child", _child)
+        tag._set_dom_properties(
+            html=f"<{tag.tagname}{fmt_props(*tag.props.items())}>{tag.child}</{tag.tagname}>"
+        )
         return tag
 
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def _repr(self) -> str:
-        return "<{0}{1}{2}>{3}</{0}>".format(
-            self.tagname,
-            " "
-            + (
-                " ".join(
-                    double_quote(x) if re.sub(r"[a-zA-Z0-9]", "", x) else x
-                    for x in self.attrs
-                )
-            )
-            if self.attrs
-            else "",
-            " " + (" ".join(f"{k}={double_quote(self.props[k])}" for k in self.props))
-            if self.props
-            else "",
-            render_element(self.child),
-        )
-
     def __repr__(self) -> str:
-        return self._repr()
+        if self.child == _Text(""):
+            return f"{self.__class__.__name__}({tmf_props(**self.props)})"
+        return (
+            f"{self.__class__.__name__}({tmf_props(**self.props)})({repr(self.child)})"
+        )
 
 
 class _CompositeTag(_Tag):
@@ -553,38 +528,23 @@ class _CompositeTag(_Tag):
         >>> class MyTag(_SingleChildTag):
         ...     tagname = "mytag"
         ... 
-        >>> MyTag("x", y="z")("foo ", MyTag()("bar"))
+        >>> print(MyTag("x", y="z")("foo ", MyTag()("bar")))
         <mytag x y="z">foo <mytag>bar</mytag></mytag>
     """
 
-    __slots__ = ["attrs", "props", "children", "_hash"]
+    __slots__ = ["children"]
 
     def __init__(self, *attrs: str, **props: str) -> None:
-        self.attrs: t.Tuple[str]
-        self.props: t.Mapping[str, str]
-        self.children: t.Tuple[object]
         super().__init__(*attrs, **props)
-        super().__class__.__setattr__(self, "children", tuple())
-        super().__class__.__setattr__(
-            self,
-            "_hash",
-            hash(f"{type(self)}({self.attrs},{self.props},{len(self.children)})"),
+        self.children: tuple
+        self._setattr("children", tuple())
+        self._set_dom_properties(
+            html=(f"<{self.tagname}{fmt_props(*self.props.items())}></{self.tagname}>")
         )
-
-    def __eq__(self, other: object) -> bool:
-        return (
-            isinstance(other, type(self))
-            and self.attrs == other.attrs
-            and self.props == other.props
-            and self.children == other.children
-        )
-
-    def __hash__(self) -> int:
-        return self._hash
 
     @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, *children: object) -> object:
-        _children: t.List[object] = []
+        _children: list = []
         for c in children:
             if isinstance(c, str):
                 _children.append(_Text(c))
@@ -593,12 +553,28 @@ class _CompositeTag(_Tag):
                 _children.append(_RawText(c.decode("utf-8")))
                 continue
             _children.append(c)
-        tag = type(self)(*self.attrs, **self.props)
-        super(type(tag), tag).__class__.__setattr__(tag, "children", tuple(_children))
+
+        tag = type(
+            self.__class__.__name__,
+            self.__class__.__bases__,
+            self.__class__.__dict__.copy(),
+        )(**self.props)
+        tag._setattr("children", tuple(_children))
+        tag._set_dom_properties(
+            html=(
+                f"<{tag.tagname}{fmt_props(*tag.props.items())}>"
+                f"{''.join(map(str, tag.children))}</{tag.tagname}>"
+            )
+        )
         return tag
 
     def __repr__(self) -> str:
-        return render_element(self)
+        if not self.children:
+            return f"{self.__class__.__name__}({tmf_props(**self.props)})"
+        return (
+            f"{self.__class__.__name__}({tmf_props(**self.props)})"
+            f"({','.join(map(repr, self.children))})"
+        )
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -611,7 +587,7 @@ def _new_adhoc_composite_tag(tagname: str):
     Example:
         >>> Clipboard_Copy = _new_adhoc_composite_tag("clipboard-copy")
         >>> Clipboard_Copy(value="foo")("Copy Me")
-        <clipboard-copy value="foo">Copy Me</clipboard-copy>
+        print(<clipboard-copy value="foo">Copy Me</clipboard-copy>)
     """
 
     return type(tagname, (_CompositeTag,), {"tagname": tagname})
@@ -622,10 +598,10 @@ class A(_CompositeTag):
     """Anchor tag: <a>.
     
     Usage:
-        >>> A(href="#")
+        >>> print(A(href="#"))
         <a href="#"></a>
         >>> 
-        >>> A(href="#")("foo")
+        >>> print(A(href="#")("foo"))
         <a href="#">foo</a>
     """
 
@@ -637,7 +613,7 @@ class Abbr(_CompositeTag):
     """Abbreviation tag: <abbr>.
 
     Usage:
-        >>> Abbr(title="World Health Organization")("WHO")
+        >>> print(Abbr(title="World Health Organization")("WHO"))
         <abbr title="World Health Organization">WHO</abbr>
     """
 
@@ -649,12 +625,12 @@ class Address(_CompositeTag):
     """Address tag: <address>.
     
     Usage:
-        >>> Address()(_RawText(f"
+        >>> print(Address()(_RawText(f"
         ... John Doe{Br()}
         ... Visit us at:{Br()}
         ... Example.com{Br()}
         ... Box 564, Disneyland{Br()}
-        ... USA")
+        ... USA"))
         <address>John Doe<br />
         Visit us at:<br />
         Example.com<br />
@@ -1344,10 +1320,14 @@ class Samp(_CompositeTag):
 class Script(_SingleChildTag):
     tagname = "script"
 
+    @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, child: str) -> object:
-        s: Script = type(self)(*self.attrs, **self.props)
-        super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
-        return s
+        return super().__call__(_RawText(child))
+
+    def __repr__(self) -> str:
+        if self.child == _Text(""):
+            return f"{self.__class__.__name__}({tmf_props(**self.props)})"
+        return f"{self.__class__.__name__}({tmf_props(**self.props)})({repr(self.child.value)})"
 
 
 @lru_cache(maxsize=MAX_CACHE_SIZE)
@@ -1399,10 +1379,14 @@ class Strong(_CompositeTag):
 class Style(_SingleChildTag):
     tagname = "style"
 
+    @lru_cache(maxsize=MAX_CACHE_SIZE)
     def __call__(self, child: str) -> object:
-        s: Style = type(self)(*self.attrs, **self.props)
-        super(type(s), s).__class__.__setattr__(s, "child", _RawText(child))
-        return s
+        return super().__call__(_RawText(child))
+
+    def __repr__(self) -> str:
+        if self.child == _Text(""):
+            return f"{self.__class__.__name__}({tmf_props(**self.props)})"
+        return f"{self.__class__.__name__}({tmf_props(**self.props)})({repr(self.child.value)})"
 
 
 class Sub(_CompositeTag):

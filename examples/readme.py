@@ -98,7 +98,8 @@ class ReadMe(Component):
                 "...     lambda x: fn.switch({\n"
                 '...         x == "good": lambda: e.Span(style="color: green")(f"this is {x}"),\n'
                 '...         x == "bad": lambda: e.Span(style="color: yellow")(f"this is {x}"),\n'
-                '...         fn.Case.DEFAULT: lambda: e.Span(style="color: red")(f"this is {x}"),\n'
+                '...         x == "evil": lambda: e.Span(style="color: red")(f"this is {x}"),\n'
+                "...         fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),\n"
                 "...     })\n"
                 "... ))\n"
                 '(<span style="color: green">this is good</span>,\n'
