@@ -1,8 +1,8 @@
 """The core elements used to render HTML.
 
 Example:
-    >>> from htmldoom import elements as e
-    >>> print(e.P(style=e.style(color="red"))("This is a paragraph"))
+    >>> from htmldoom.elements import P, style
+    >>> print(P(style=style(color="red"))("This is a paragraph"))
     <p style="color: 'red';">This is a paragraph</p>
 """
 
@@ -253,11 +253,11 @@ def tmf_props(**props: str) -> str:
     attrs = []
     props_ = {}
 
-    for k, v in props.items():
+    for k in props:
         if not v:
             attrs.append(k)
             continue
-        props_[k] = v
+        props_[k] = props[k]
         if not use_expansion and (
             k in RESERVED_KEYWORDS or re.sub(r"[a-zA-Z_]", "", k)
         ):
@@ -270,7 +270,7 @@ def tmf_props(**props: str) -> str:
 
     _props = f"**{props_}"
     if not use_expansion:
-        _props = ", ".join(f"{k}={repr(v)}" for k, v in props_.items())
+        _props = ", ".join(f"{k}={repr(props_[k])}" for k in props_)
 
     if not attrs:
         return _props
@@ -428,7 +428,7 @@ class DocType(_Declaration):
         <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
     """
 
-    __slots__ = ["attrs"]
+    __slots__ = ["props"]
 
     def __init__(self, *attrs: str) -> None:
         super().__init__()
@@ -443,15 +443,15 @@ class DocType(_Declaration):
 class _Tag(_DOMCitizen):
     """Base class for all tags."""
 
-    __slots__ = ["attrs", "props"]
+    __slots__ = ["props"]
 
     tagname: str
 
     def __init__(self, *attrs: str, **props: str) -> None:
+        for k in attrs:
+            props[k] = None
         self.props: MappingProxyType
-        self._setattr(
-            "props", MappingProxyType(dict({x: None for x in attrs}, **props))
-        )
+        self._setattr("props", MappingProxyType(props))
 
 
 class _LeafTag(_Tag):
