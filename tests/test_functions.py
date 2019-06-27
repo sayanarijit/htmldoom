@@ -15,4 +15,5 @@ def test_switch_case():
 
 def test_foreach():
     numbers = [1, 2, 3]
-    fn.foreach(numbers)(lambda n: n * 2) == [2, 4, 3]
+    list(fn.foreach(numbers)(lambda n: n * 2)) == [2, 4, 3]
+    tuple(fn.foreach(numbers)(lambda n: n * 2)) == (2, 4, 3)

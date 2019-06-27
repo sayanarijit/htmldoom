@@ -4,13 +4,13 @@ Example:
     >>> from htmldoom import elements as e
     >>> from htmldoom import functions as fn
     >>> 
-    >>> fn.foreach(["good", "bad", "evil"])(
+    >>> tuple(fn.foreach(["good", "bad", "evil"])(
     ...     lambda x: fn.switch({
     ...         x == "good": lambda: e.Span(style="color: green")(f"this is {x}"),
     ...         x == "bad": lambda: e.Span(style="color: yellow")(f"this is {x}"),
     ...         fn.Case.DEFAULT: lambda: e.Span(style="color: red")(f"this is {x}"),
     ...     })
-    ... )
+    ... ))
     (<span style="color: green">this is good</span>,
      <span style="color: yellow">this is bad</span>,
      <span style="color: red">this is evil</span>)
@@ -62,11 +62,11 @@ def foreach(data):
     """A foreach function to make map() look a little nicer.
     
     Example:
-        >>> foreach([1, 2, 4])(lambda n: n * 2)
+        >>> list(foreach([1, 2, 4])(lambda n: n * 2))
         [2, 4, 3]
     """
 
     def wrapped(func):
-        return tuple(map(func, data))
+        return map(func, data)
 
     return wrapped
