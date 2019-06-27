@@ -19,13 +19,13 @@
 &lt;html&gt;&lt;head&gt;&lt;title&gt;foo&lt;/title&gt;&lt;/head&gt;&lt;body&gt;Welcome bar&lt;/body&gt;&lt;/html&gt;</pre></p><p><h2>A functional style foreach loop with a switch case</h2><pre>&gt;&gt;&gt; from htmldoom import elements as e
 &gt;&gt;&gt; from htmldoom import functions as fn
 &gt;&gt;&gt; 
-&gt;&gt;&gt; fn.foreach([&quot;good&quot;, &quot;bad&quot;, &quot;evil&quot;])(
+&gt;&gt;&gt; tuple(fn.foreach([&quot;good&quot;, &quot;bad&quot;, &quot;evil&quot;])(
 ...     lambda x: fn.switch({
 ...         x == &quot;good&quot;: lambda: e.Span(style=&quot;color: green&quot;)(f&quot;this is {x}&quot;),
 ...         x == &quot;bad&quot;: lambda: e.Span(style=&quot;color: yellow&quot;)(f&quot;this is {x}&quot;),
 ...         fn.Case.DEFAULT: lambda: e.Span(style=&quot;color: red&quot;)(f&quot;this is {x}&quot;),
 ...     })
-... )
+... ))
 (&lt;span style=&quot;color: green&quot;&gt;this is good&lt;/span&gt;,
  &lt;span style=&quot;color: yellow&quot;&gt;this is bad&lt;/span&gt;,
  &lt;span style=&quot;color: red&quot;&gt;this is evil&lt;/span&gt;)
