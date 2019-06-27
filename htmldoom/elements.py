@@ -15,9 +15,11 @@ from types import MappingProxyType
 
 __all__ = [
     "double_quote",
-    "render_element",
     "css",
     "style",
+    "fmt_prop",
+    "fmt_props",
+    "tmf_props",
     "_RawText",
     "_Text",
     "_Declaration",
