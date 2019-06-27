@@ -1,5 +1,14 @@
 """Functional APIs to render dynamic elements.
 
+Most of the functions here helps make the code look a little nicer but there might be
+some performance cost. For example, in case of the switch case, the cost of creating a
+new dictionary instance for each element, or in case of foreach loop, the cost of an extra
+functiion call.
+
+Hence, always prefer to stick with the builtin functions in Python such as map, lambda,
+or even good old function definitions. use these functions where the other benefits 
+outweights performance concerns.
+
 Example:
     >>> from htmldoom import elements as e
     >>> from htmldoom import functions as fn

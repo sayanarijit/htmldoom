@@ -588,8 +588,8 @@ def _new_adhoc_composite_tag(tagname: str):
 
     Example:
         >>> Clipboard_Copy = _new_adhoc_composite_tag("clipboard-copy")
-        >>> Clipboard_Copy(value="foo")("Copy Me")
-        print(<clipboard-copy value="foo">Copy Me</clipboard-copy>)
+        >>> print(Clipboard_Copy(value="foo")("Copy Me"))
+        <clipboard-copy value="foo">Copy Me</clipboard-copy>
     """
 
     return type(tagname, (_CompositeTag,), {"tagname": tagname})
@@ -716,7 +716,7 @@ class Br(_LeafTag):
     """Line break: <br>.
     
     Usage:
-        >>> repr(Br())
+        >>> print(Br())
         <br />
     """
 

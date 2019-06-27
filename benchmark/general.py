@@ -63,23 +63,18 @@ makotmpl = """\
 
 
 def htmldoom(n):
+    def even_or_odd(i):
+        if i % 2 == 0:
+            return e.P(style="color: blue")(f"{i} is even")
+        return e.P(style="color: red")(f"{i} is odd")
+
     return str(
         e.HTML()(
             e.Head()(e.Title()("benchmark test")),
             e.Body()(
                 e.Div()(
                     e.Div()(f"Printing odd paragraphs with till {n}"),
-                    *fn.foreach(range(n))(
-                        lambda i: fn.switch(
-                            {
-                                i % 2
-                                == 0: lambda: e.P(style="color: blue")(f"{i} is even"),
-                                fn.Case.DEFAULT: lambda: e.P(style="color: red")(
-                                    f"{i} is odd"
-                                ),
-                            }
-                        )
-                    ),
+                    *map(even_or_odd, range(n)),
                     e.Footer()("This is it then..."),
                 )
             ),
