@@ -12,11 +12,15 @@ __all__ = [
     "__version__",
     "__license__",
     "elements",
-    "purefunc",
     "layouts",
     "functions",
+    "render",
+    "conf",
+    "raw",
+    "txt",
+    "comment",
+    "doctype",
 ]
 
-
-def render(dom: callable) -> str:
-    return dom()
+from htmldoom.base import comment, doctype, raw, txt
+from htmldoom.util import render
