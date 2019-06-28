@@ -3,7 +3,7 @@
 import typing as t
 from types import MappingProxyType
 
-from htmldoom import elements as e
+from htmldoom.oldstyle import elements as e
 
 __all__ = ["BaseLayout", "Component"]
 

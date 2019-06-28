@@ -2,7 +2,7 @@ __author__ = "Arijit Basu"
 __email__ = "sayanarijit@gmail.com"
 __homepage__ = "https://github.com/sayanarijit/htmldoom"
 __description__ = "Write safer and cleaner HTML using Python"
-__version__ = "v0.3.1"
+__version__ = "v0.5"
 __license__ = "MIT"
 __all__ = [
     "__author__",
@@ -12,6 +12,11 @@ __all__ = [
     "__version__",
     "__license__",
     "elements",
+    "purefunc",
     "layouts",
     "functions",
 ]
+
+
+def render(dom: callable) -> str:
+    return dom()
