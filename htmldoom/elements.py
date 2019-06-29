@@ -253,11 +253,11 @@ def tmf_props(**props: str) -> str:
     attrs = []
     props_ = {}
 
-    for k in props:
+    for k, v in props.items():
         if not v:
             attrs.append(k)
             continue
-        props_[k] = props[k]
+        props_[k] = v
         if not use_expansion and (
             k in RESERVED_KEYWORDS or re.sub(r"[a-zA-Z_]", "", k)
         ):
@@ -448,10 +448,9 @@ class _Tag(_DOMCitizen):
     tagname: str
 
     def __init__(self, *attrs: str, **props: str) -> None:
-        for k in attrs:
-            props[k] = None
+        _props = dict({x: None for x in attrs}, **props)
         self.props: MappingProxyType
-        self._setattr("props", MappingProxyType(props))
+        self._setattr("props", MappingProxyType(_props))
 
 
 class _LeafTag(_Tag):
