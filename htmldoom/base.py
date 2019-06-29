@@ -3,110 +3,95 @@
 from functools import lru_cache
 from html import escape
 
-from htmldoom.conf import MAX_CACHE_SIZE
+from htmldoom.conf import CacheConfig
 from htmldoom.util import fmt_prop
 from htmldoom.util import render as _render
 
 __all__ = ["composite_tag", "txt", "raw"]
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
-def txt(text: str) -> callable:
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def render() -> str:
-        return escape(text)
-
-    return render
+@lru_cache(maxsize=CacheConfig.MAXSIZE)
+def txt(text: str) -> bytes:
+    return escape(text).encode()
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
-def raw(text: str) -> callable:
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def render() -> str:
-        return text
-
-    return render
+@lru_cache(maxsize=CacheConfig.MAXSIZE)
+def raw(text: str) -> bytes:
+    return text.encode()
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
-def comment(text: str) -> callable:
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def render() -> str:
-        return "<!-- {escape(text)} -->"
-
-    return render
+@lru_cache(maxsize=CacheConfig.MAXSIZE)
+def comment(text: str) -> bytes:
+    return (f"<!-- {escape(text)} -->").encode()
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
-def doctype(*attrs: str) -> callable:
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def render() -> str:
-        return "<!DOCTYPE {fmt_prop(x, None) for x in attrs} >"
-
-    return render
+@lru_cache(maxsize=CacheConfig.MAXSIZE)
+def doctype(*attrs: str) -> bytes:
+    return (f"<!DOCTYPE {' '.join(fmt_prop(x, None) for x in attrs)}>").encode()
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
-def leaf_tag(func: callable) -> callable:
-    tagname = func()
+def leaf_tag(tagname: str) -> callable:
+    @lru_cache(maxsize=CacheConfig.MAXSIZE)
+    def set_props(*bool_props: str, **kv_props: str) -> bytes:
 
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
-    def set_props(*bool_props: str, **kv_props: str) -> callable:
-        @lru_cache(maxsize=MAX_CACHE_SIZE)
-        def render():
-
-            if not bool_props and not kv_props:
-                return f"<{tagname} />"
-
-            if not kv_props:
-                return (
-                    f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)} />"
-                )
-            if not bool_props:
-                return f"<{tagname} {' '.join(fmt_prop(k, v) for k, v in kv_props.items())} />"
-
-            return (
-                f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)}"
-                f" {' '.join(fmt_prop(k, v) for k, v in kv_props.items())} />"
+        if bool_props and callable(bool_props[0]):
+            raise ValueError(
+                f"{tagname}(!WEIRD THINGS PASSED HERE!): here you pass tag attributes, not child elements."
+                " By the way, this is a leaf tag i.e. Doesn't support child elements."
             )
 
-        return render
+        if not bool_props and not kv_props:
+            return (f"<{tagname} />").encode()
+
+        if not kv_props:
+            return (
+                f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)} />"
+            ).encode()
+        if not bool_props:
+            return (
+                f"<{tagname} {' '.join(fmt_prop(k, v) for k, v in kv_props.items())} />"
+            ).encode()
+
+        return (
+            f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)}"
+            f" {' '.join(fmt_prop(k, v) for k, v in kv_props.items())} />"
+        ).encode()
 
     return set_props
 
 
-@lru_cache(maxsize=MAX_CACHE_SIZE)
-def composite_tag(func: callable) -> callable:
-    tagname = func()
-
-    @lru_cache(maxsize=MAX_CACHE_SIZE)
+def composite_tag(tagname: str) -> callable:
+    @lru_cache(maxsize=CacheConfig.MAXSIZE)
     def set_props(*bool_props: str, **kv_props: str) -> callable:
-        @lru_cache(maxsize=MAX_CACHE_SIZE)
-        def set_children(*children: tuple) -> str:
-            @lru_cache(maxsize=MAX_CACHE_SIZE)
-            def render():
 
-                if not bool_props and not kv_props:
-                    return f"<{tagname}>{_render(*children)}</{tagname}>"
+        if bool_props and callable(bool_props[0]):
+            raise ValueError(
+                f"{tagname}(!WEIRD THINGS PASSED HERE!): here you pass tag attributes, not child elements."
+                f" Follow this syntax: {tagname}(*args, **kwargs)(element1, element2, ...)"
+            )
 
-                if not kv_props:
-                    return (
-                        f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)}>"
-                        f"{_render(*children)}</{tagname}>"
-                    )
-                if not bool_props:
-                    return (
-                        f"<{tagname} {' '.join(fmt_prop(k, v) for k, v in kv_props.items())}>"
-                        f"{_render(*children)}</{tagname}>"
-                    )
+        @lru_cache(maxsize=CacheConfig.MAXSIZE)
+        def set_children(*children: tuple) -> bytes:
 
+            if not bool_props and not kv_props:
+                return (f"<{tagname}>{_render(*children)}</{tagname}>").encode()
+
+            if not kv_props:
                 return (
-                    f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)}"
-                    f" {' '.join(fmt_prop(k, v) for k, v in kv_props.items())}>"
+                    f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)}>"
                     f"{_render(*children)}</{tagname}>"
-                )
+                ).encode()
+            if not bool_props:
+                return (
+                    f"<{tagname} {' '.join(fmt_prop(k, v) for k, v in kv_props.items())}>"
+                    f"{_render(*children)}</{tagname}>"
+                ).encode()
 
-            return render
+            return (
+                f"<{tagname} {' '.join(fmt_prop(x, None) for x in bool_props)}"
+                f" {' '.join(fmt_prop(k, v) for k, v in kv_props.items())}>"
+                f"{_render(*children)}</{tagname}>"
+            ).encode()
 
         return set_children
 

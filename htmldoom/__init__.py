@@ -1,7 +1,8 @@
 __author__ = "Arijit Basu"
 __email__ = "sayanarijit@gmail.com"
 __homepage__ = "https://github.com/sayanarijit/htmldoom"
-__description__ = "Write safer and cleaner HTML using Python"
+__description__ = "An intuitive, high performance HTML rendering framework"
+
 __version__ = "v0.5"
 __license__ = "MIT"
 __all__ = [
@@ -12,15 +13,16 @@ __all__ = [
     "__version__",
     "__license__",
     "elements",
-    "layouts",
     "functions",
+    "document",
     "render",
     "conf",
     "raw",
     "txt",
     "comment",
-    "doctype",
+    "CacheConfig",
 ]
 
 from htmldoom.base import comment, doctype, raw, txt
+from htmldoom.conf import CacheConfig
 from htmldoom.util import render

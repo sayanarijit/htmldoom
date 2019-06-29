@@ -4,7 +4,7 @@ from chameleon import PageTemplate
 from jinja2 import Template
 from mako.template import Template as MakoTemplate
 
-from htmldoom import render, txt
+from htmldoom import render
 from htmldoom.elements import body, div, footer, head, html, p, title
 from htmldoom.functions import Case, Error, switch
 
@@ -66,17 +66,17 @@ makotmpl = """\
 def htmldoom(n):
     def even_or_odd(i):
         if i % 2 == 0:
-            return p(style="color: blue")(txt(f"{i} is even"))
-        return p(style="color: red")(txt(f"{i} is odd"))
+            return p(style="color: blue")(f"{i} is even")
+        return p(style="color: red")(f"{i} is odd")
 
     return render(
         html()(
-            head()(title()(txt("benchmark test"))),
+            head()(title()("benchmark test")),
             title()(
                 div()(
-                    div()(txt(f"Printing odd paragraphs with till {n}")),
+                    div()(f"Printing odd paragraphs with till {n}"),
                     *map(even_or_odd, range(n)),
-                    footer()(txt("This is it then...")),
+                    footer()("This is it then..."),
                 )
             ),
         )

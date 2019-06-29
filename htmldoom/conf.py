@@ -1,1 +1,5 @@
-MAX_CACHE_SIZE = 12800
+__all__ = "CacheConfig"
+
+
+class CacheConfig:
+    MAXSIZE = 17500
