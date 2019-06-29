@@ -2,7 +2,7 @@
 
 Most of the functions here helps make the code look a little nicer but there might be
 some performance cost. For example, in case of the switch case, the cost of creating a
-new dictionary instance for each element, or in case of foreach loop, the cost of an extra
+new dictionary instance for each case, or in case of the foreach loop, the cost of an extra
 functiion call.
 
 Hence, always prefer to stick with the builtin functions in Python such as map, lambda,
@@ -15,23 +15,16 @@ Example:
     >>> 
     >>> tuple(fn.foreach(["good", "bad", "evil"])(
     ...     lambda x: fn.switch({
-    ...         x == "good": lambda: e.Span(style="color: green")(f"this is {x}"),
-    ...         x == "bad": lambda: e.Span(style="color: yellow")(f"this is {x}"),
-    ...         x == "evil": lambda: e.Span(style="color: red")(f"this is {x}"),
+    ...         x == "good": lambda: e.span(style="color: green")(f"this is {x}"),
+    ...         x == "bad": lambda: e.span(style="color: yellow")(f"this is {x}"),
+    ...         x == "evil": lambda: e.span(style="color: red")(f"this is {x}"),
     ...         fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),
     ...     })
     ... ))
-    (<span style="color: green">this is good</span>,
-     <span style="color: yellow">this is bad</span>,
-     <span style="color: red">this is evil</span>)
+    (b'<span style="color: green">this is good</span>',
+     b'<span style="color: yellow">this is bad</span>',
+     b'<span style="color: red">this is evil</span>')
 """
-
-import re
-import typing as t
-from collections import Mapping
-from functools import lru_cache
-
-MAX_CACHE_SIZE = 12800
 
 
 class Case:
@@ -47,11 +40,11 @@ class Error:
     """Helps raising errors from lambdas."""
 
     @staticmethod
-    def throw(error: Exception):
+    def throw(error: Exception) -> None:
         raise error
 
 
-def switch(cases):
+def switch(cases: dict) -> object:
     """A dirty implementation of the missing switch case.
 
     Example:
