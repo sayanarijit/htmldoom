@@ -72,6 +72,32 @@ readme = (
         ),
     ),
     e.p()(
+        e.h2()("A fast dynamic elements rendering mechanism"),
+        e.p()("Choose whichever syntax suits you:"),
+        e.h3()("Syntax 1"),
+        e.pre()(
+            ">>> @renders(\n"
+            '...     e.p()("{x}"),\n'
+            '...     e.p()("another {x}"),\n'
+            "... )\n"
+            "... def render_paras(data: dict) -> dict:\n"
+            '...     return {"x": data["x"]}\n'
+            ">>> \n"
+            '>>> render_paras({"x": "awesome paragraph"})\n'
+            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
+        ),
+        e.h3()("Syntax 2"),
+        e.pre()(
+            ">>> render_paras = renders(\n"
+            '...     e.p()("{x}"),\n'
+            '...     e.p()("another {x}"),\n'
+            '... )(lambda data: {"x": data["x"]})\n'
+            ">>> \n"
+            '>>> render_paras({"x": "awesome paragraph"})\n'
+            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
+        ),
+    ),
+    e.p()(
         e.a(href="https://github.com/sayanarijit/htmldoom/tree/master/examples")(
             e.b()("Find more examples here")
         )

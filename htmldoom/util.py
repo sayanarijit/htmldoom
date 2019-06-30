@@ -4,7 +4,7 @@ from re import sub
 
 from htmldoom.conf import CacheConfig
 
-__all__ = ["render", "double_quote", "fmt_prop"]
+__all__ = ["render", "renders", "double_quote", "fmt_prop"]
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
@@ -34,6 +34,43 @@ def render(*doms: object) -> str:
             f"{dom}: expected either of str, bytes, or a callable but got {type(dom)}"
         )
     return "".join(map(render, doms))
+
+
+def renders(*element: bytes) -> callable:
+    """Decorator for rendering dynamic elements based on given template.
+    
+    It improves the performance a lot by pre-compiling the templates.
+    Hence, it's highly recommended to use this decorator.
+
+    Example (syntax 1):
+        >>> @renders(
+        ...     e.p()("{x}"),
+        ...     e.p()("another {x}"),
+        ... )
+        ... def render_paras(data: dict) -> dict:
+        ...     return {"x": data["x"]}
+        >>> 
+        >>> render_paras({"x": "awesome paragraph"})
+        <p>awesome paragraph</p><p>another awesome paragraph</p>
+    
+    Example (syntax 2):
+        >>> render_paras = renders(
+        ...     e.p()("{x}"),
+        ...     e.p()("another {x}"),
+        ... )(lambda data: {"x": data["x"]})
+        >>> 
+        >>> render_paras({"x": "awesome paragraph"})
+        <p>awesome paragraph</p><p>another awesome paragraph</p>
+    """
+    template: str = render(*element)
+
+    def wrapped(func: callable) -> str:
+        def renderer(*args: object, **kwargs: object) -> str:
+            return template.format(**func(*args, **kwargs))
+
+        return renderer
+
+    return wrapped
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)

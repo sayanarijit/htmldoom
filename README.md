@@ -15,4 +15,20 @@
 (b&#x27;&lt;span style=&quot;color: green&quot;&gt;this is good&lt;/span&gt;&#x27;,
  b&#x27;&lt;span style=&quot;color: yellow&quot;&gt;this is bad&lt;/span&gt;&#x27;,
  b&#x27;&lt;span style=&quot;color: red&quot;&gt;this is evil&lt;/span&gt;&#x27;)
-</pre></p><p><a href="https://github.com/sayanarijit/htmldoom/tree/master/examples"><b>Find more examples here</b></a></p><p><h2>Q/A</h2><h3>What is the goal here?</h3><p>The primary goal is to make writing HTML pages cleaner, easier, safer and intuitive using Python.</p><h3>What about performance?</h3><p>Although performance is not the primary goal here, it should not be a roadblock. htmldoom is copying the syntax and some of the rendering properties of <a href="https://elm-lang.org">elm</a>, an existing fast and purely functional programming language that specializes in rendering HTML in virtual doms. Elm does all the optimisation internally, which I&#x27;m believe can be implemented in Python to a great extent.<br />Furthermore, if we follow the <a href="https://developers.google.com/web/tools/lighthouse/audits/dom-size">the DOM size recommendations</a>, i.e.<ul><li>less than 1500 nodes total.</li><li>maximum depth of 32 nodes.</li><li>no parent node with more than 60 child nodes.</li></ul> htmldoom should perform really well.</p></p><p><h2>Plugins and ecosystem</h2><p><ul><li><a href="https://github.com/sayanarijit/moodlmth"><b>moodlmth</b></a><span>: Convert raw HTML pages into python source code</span></li></ul><ul><li><a href="https://github.com/sayanarijit/pyramid_htmldoom"><b>pyramid_htmldoom</b></a><span>: htmldoom rendering library plugin for Pyramid</span></li></ul></p></p><p><h2>Contributing</h2><p>Check out the <a href="https://github.com/sayanarijit/htmldoom/tree/master/CONTRIBUTING.md"> contributing guidelines.</a></p></p>
+</pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Syntax 1</h3><pre>&gt;&gt;&gt; @renders(
+...     e.p()(&quot;{x}&quot;),
+...     e.p()(&quot;another {x}&quot;),
+... )
+... def render_paras(data: dict) -&gt; dict:
+...     return {&quot;x&quot;: data[&quot;x&quot;]}
+&gt;&gt;&gt; 
+&gt;&gt;&gt; render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;})
+&lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
+</pre><h3>Syntax 2</h3><pre>&gt;&gt;&gt; render_paras = renders(
+...     e.p()(&quot;{x}&quot;),
+...     e.p()(&quot;another {x}&quot;),
+... )(lambda data: {&quot;x&quot;: data[&quot;x&quot;]})
+&gt;&gt;&gt; 
+&gt;&gt;&gt; render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;})
+&lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
+</pre></p><p><a href="https://github.com/sayanarijit/htmldoom/tree/master/examples"><b>Find more examples here</b></a></p><p><h2>Q/A</h2><h3>What is the goal here?</h3><p>The primary goal is to make writing HTML pages cleaner, easier, safer and intuitive using Python.</p><h3>What about performance?</h3><p>Although performance is not the primary goal here, it should not be a roadblock. htmldoom is copying the syntax and some of the rendering properties of <a href="https://elm-lang.org">elm</a>, an existing fast and purely functional programming language that specializes in rendering HTML in virtual doms. Elm does all the optimisation internally, which I believe can be implemented in Python to a great extent.<br />Furthermore, if we follow the <a href="https://developers.google.com/web/tools/lighthouse/audits/dom-size">the DOM size recommendations</a>, i.e.<ul><li>less than 1500 nodes total.</li><li>maximum depth of 32 nodes.</li><li>no parent node with more than 60 child nodes.</li></ul> htmldoom should perform really well.</p></p><p><h2>Plugins and ecosystem</h2><p><ul><li><a href="https://github.com/sayanarijit/moodlmth"><b>moodlmth</b></a><span>: Convert raw HTML pages into python source code</span></li></ul><ul><li><a href="https://github.com/sayanarijit/pyramid_htmldoom"><b>pyramid_htmldoom</b></a><span>: htmldoom rendering library plugin for Pyramid</span></li></ul></p></p><p><h2>Contributing</h2><p>Check out the <a href="https://github.com/sayanarijit/htmldoom/tree/master/CONTRIBUTING.md"> contributing guidelines.</a></p></p>
