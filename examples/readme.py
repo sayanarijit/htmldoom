@@ -48,8 +48,57 @@ readme = (
         e.pre()(
             ">>> from htmldoom import render, elements as e\n"
             ">>> \n"
-            """>>> print(render(e.p(style="color='red'")("This is a paragraph")))\n"""
-            """<p style="color:'red';">This is a paragraph</p>"""
+            ">>> print(render(\n"
+            '...     e.textarea("required", class_="input")("text")\n'
+            "... ))\n"
+            '<textarea required class="input">text</textarea>'
+        ),
+    ),
+    e.p()(
+        e.h2()("A fast dynamic elements rendering mechanism"),
+        e.p()("Choose whichever syntax suits you:"),
+        e.h3()("Syntax 1"),
+        e.pre()(
+            ">>> from htmldoom import renders, elements as e\n"
+            ">>> \n"
+            ">>> @renders(\n"
+            '...     e.p()("{x}"),\n'
+            '...     e.p()("another {x}"),\n'
+            "... )\n"
+            "... def render_paras(data: dict) -> dict:\n"
+            '...     return {"x": data["x"]}\n'
+            ">>> \n"
+            '>>> render_paras({"x": "awesome paragraph"})\n'
+            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
+        ),
+        e.h3()("Syntax 2"),
+        e.pre()(
+            ">>> from htmldoom import renders, elements as e\n"
+            ">>> \n"
+            ">>> render_paras = renders(\n"
+            '...     e.p()("{x}"),\n'
+            '...     e.p()("another {x}"),\n'
+            '... )(lambda data: {"x": data["x"]})\n'
+            ">>> \n"
+            '>>> render_paras({"x": "awesome paragraph"})\n'
+            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
+        ),
+        e.p()(
+            e.b()("NOTE: "),
+            "This mechanism compiles the template when the file loads and reuse it.",
+            e.br(),
+            e.pre()(b"renders( -- compile-time code -- )( -- runtime code -- )"),
+            e.br(),
+            "The more execution you move from runtime to compile-time, the faster it gets.",
+            e.br(),
+            "If you properly use this mechanism and refractor your dynamic pages into smaller"
+            " components, it will surpass the performance of traditional template rendering engines.",
+        ),
+        e.p()(
+            e.b()("WARNING: "),
+            "It performs a ",
+            e.code()('"{rendered_elements}".format(**returned_data)'),
+            ". So be careful about where you put which code.",
         ),
     ),
     e.p()(
@@ -72,32 +121,6 @@ readme = (
         ),
     ),
     e.p()(
-        e.h2()("A fast dynamic elements rendering mechanism"),
-        e.p()("Choose whichever syntax suits you:"),
-        e.h3()("Syntax 1"),
-        e.pre()(
-            ">>> @renders(\n"
-            '...     e.p()("{x}"),\n'
-            '...     e.p()("another {x}"),\n'
-            "... )\n"
-            "... def render_paras(data: dict) -> dict:\n"
-            '...     return {"x": data["x"]}\n'
-            ">>> \n"
-            '>>> render_paras({"x": "awesome paragraph"})\n'
-            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
-        ),
-        e.h3()("Syntax 2"),
-        e.pre()(
-            ">>> render_paras = renders(\n"
-            '...     e.p()("{x}"),\n'
-            '...     e.p()("another {x}"),\n'
-            '... )(lambda data: {"x": data["x"]})\n'
-            ">>> \n"
-            '>>> render_paras({"x": "awesome paragraph"})\n'
-            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
-        ),
-    ),
-    e.p()(
         e.a(href="https://github.com/sayanarijit/htmldoom/tree/master/examples")(
             e.b()("Find more examples here")
         )
@@ -106,21 +129,18 @@ readme = (
         e.h2()("Q/A"),
         e.h3()("What is the goal here?"),
         e.p()(
-            "The primary goal is to make writing HTML pages cleaner, easier, safer and intuitive using Python."
+            "The primary goal is to make writing dynamic HTML pages "
+            "cleaner, easier, safer and intuitive in Python."
         ),
         e.h3()("What about performance?"),
         e.p()(
-            (
-                "Although performance is not the primary goal here, it should not be a roadblock."
-                " htmldoom is copying the syntax and some of the rendering properties of "
-            ),
+            "Although performance is not the primary goal here, it should not be a roadblock.",
+            " htmldoom is copying the syntax and some of the rendering properties of ",
             e.a(href="https://elm-lang.org")("elm"),
-            (
-                ", an existing fast and purely functional programming language"
-                " that specializes in rendering HTML in virtual doms."
-                " Elm does all the optimisation internally, which I believe can be"
-                " implemented in Python to a great extent."
-            ),
+            ", an existing fast and purely functional programming language",
+            " that specializes in rendering HTML in virtual doms.",
+            " Elm does all the optimisation internally, which I believe can be",
+            " implemented in Python to a great extent.",
             e.br(),
             "Furthermore, if we follow the ",
             e.a(
@@ -132,7 +152,20 @@ readme = (
                 e.li()("maximum depth of 32 nodes."),
                 e.li()("no parent node with more than 60 child nodes."),
             ),
+            e.br(),
             " htmldoom should perform really well.",
+            e.br(),
+            "Also since it's all Python, the power is in your hands to make"
+            " all the optimisations possible at the lowest level.",
+        ),
+        e.h3()("Still worried about performance. Is there any benchmark?"),
+        e.p()(
+            "Basic benchmarks are done and it shows that htmldoom performs better than traditional",
+            " rendering engines without explicitly making any optimisation.",
+            e.br(),
+            e.a(href="https://github.com/sayanarijit/htmldoom/blob/master/examples")(
+                e.b()("Refer to the benchmarks here.")
+            ),
         ),
     ),
     e.p()(
