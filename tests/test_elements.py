@@ -14,7 +14,7 @@ def test_leaf_tag():
 def test_composite_tag():
     assert render(composite_tag("p")()()) == "<p></p>"
     assert render(p()(txt("x"))) == "<p>x</p>"
-    assert render(p()(txt("x"))) == "<p>x</p>"
+    assert render(p(class_="y")(txt("x"))) == '<p class="y">x</p>'
     assert render(p("a")(txt("x"))) == "<p a>x</p>"
     assert render(p("a", b="c")(txt("x"))) == '<p a b="c">x</p>'
     assert render(p(b="c")(txt("x"))) == '<p b="c">x</p>'

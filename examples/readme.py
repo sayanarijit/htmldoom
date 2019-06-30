@@ -92,7 +92,7 @@ readme = (
             (
                 ", an existing fast and purely functional programming language"
                 " that specializes in rendering HTML in virtual doms."
-                " Elm does all the optimisation internally, which I'm believe can be"
+                " Elm does all the optimisation internally, which I believe can be"
                 " implemented in Python to a great extent."
             ),
             e.br(),
