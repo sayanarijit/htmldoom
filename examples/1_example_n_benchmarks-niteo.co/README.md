@@ -1,12 +1,12 @@
-### To view the content
+### Rendered pages
 
 ```bash
-python jinja2/render.py
+PYTHONPATH=$PWD python jinja2/render.py
 
-python htmldoom/render.py
+PYTHONPATH=$PWD python htmldoom/render.py
 ```
 
-### To measure
+### Benchmarks
 
 ```python
 In [1]: from jinja2_pages.render import render as jinja2_renderer

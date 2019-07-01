@@ -44,22 +44,19 @@ setup(
         #   4 - Beta
         #   5 - Production/Stable
         "Development Status :: 3 - Alpha",
+        "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
         "Intended Audience :: Other Audience",
         "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
+        "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        "Topic :: Utilities",
-        "Topic :: Software Development",
-        "Operating System :: MacOS",
-        "Operating System :: Unix",
-        "Operating System :: POSIX",
-        "Operating System :: Microsoft",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     platforms=["Any"],
-    keywords="html dom builder",
+    keywords="html rendering framework",
     packages=find_packages(
         exclude=["contrib", "docs", "tests", "examples", "benchmark"]
     ),

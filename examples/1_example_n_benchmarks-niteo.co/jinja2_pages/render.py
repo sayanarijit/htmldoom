@@ -3,7 +3,7 @@ from jinja2.environment import Environment
 
 env = Environment()
 env.loader = FileSystemLoader(".")
-jinja2_renderer = env.get_template("jinja2_pages/index.jinja2")
+jinja2_renderer = env.get_template("jinja2_pages/index.html")
 
 
 def render():
