@@ -92,7 +92,7 @@ readme = (
             "The more execution you move from runtime to compile-time, the faster it gets.",
             e.br(),
             "If you properly use this mechanism and refractor your dynamic pages into smaller"
-            " components, it will surpass the performance of traditional template rendering engines.",
+            " components, it might surpass the performance of traditional template rendering engines.",
         ),
         e.p()(
             e.b()("WARNING: "),
@@ -142,14 +142,11 @@ readme = (
             " Elm does all the optimisation internally, which I believe can be",
             " implemented in Python to a great extent.",
         ),
-        e.h3()("Still worried about performance. Is there any benchmark?"),
+        e.h3()("Is there any benchmark?"),
         e.p()(
-            "Basic benchmarks are done and it shows that htmldoom performs better than traditional",
-            " rendering engines without explicitly making any optimisation.",
-            e.br(),
             e.a(href="https://github.com/sayanarijit/htmldoom/blob/master/examples")(
                 e.b()("Refer to the benchmarks here.")
-            ),
+            )
         ),
     ),
     e.p()(
