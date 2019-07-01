@@ -141,22 +141,6 @@ readme = (
             " that specializes in rendering HTML in virtual doms.",
             " Elm does all the optimisation internally, which I believe can be",
             " implemented in Python to a great extent.",
-            e.br(),
-            "Furthermore, if we follow the ",
-            e.a(
-                href="https://developers.google.com/web/tools/lighthouse/audits/dom-size"
-            )("the DOM size recommendations"),
-            ", i.e.",
-            e.ul()(
-                e.li()("less than 1500 nodes total."),
-                e.li()("maximum depth of 32 nodes."),
-                e.li()("no parent node with more than 60 child nodes."),
-            ),
-            e.br(),
-            " htmldoom should perform really well.",
-            e.br(),
-            "Also since it's all Python, the power is in your hands to make"
-            " all the optimisations possible at the lowest level.",
         ),
         e.h3()("Still worried about performance. Is there any benchmark?"),
         e.p()(
