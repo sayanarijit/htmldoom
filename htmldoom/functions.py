@@ -40,11 +40,11 @@ class Error:
     """Helps raising errors from lambdas."""
 
     @staticmethod
-    def throw(error: Exception) -> None:
+    def throw(error: Exception):
         raise error
 
 
-def switch(cases: dict) -> object:
+def switch(cases):
     """A dirty implementation of the missing switch case.
 
     Example:

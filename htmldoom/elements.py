@@ -1,9 +1,9 @@
 """All the elements that resides in an HTML DOM.
 
 Example:
-    >>> from htmldoom.elements import p
-    >>> render(p(style="color: 'red'")("This is a paragraph"))
-    <p style="color: 'red'">This is a paragraph</p>
+    >>> from htmldoom import render, elements as e
+    >>> render(e.p(class_="comeclass")("This is a paragraph"))
+    <p class_="someclass">This is a paragraph</p>
 """
 
 from htmldoom.base import composite_tag, leaf_tag

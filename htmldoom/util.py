@@ -8,7 +8,7 @@ __all__ = ["render", "renders", "double_quote", "fmt_prop"]
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
-def render(*doms: object) -> str:
+def render(*doms):
     """Use it to render DOM elements.
     
     Example:
@@ -36,7 +36,8 @@ def render(*doms: object) -> str:
     return "".join(map(render, doms))
 
 
-def renders(*element: bytes) -> callable:
+@lru_cache(maxsize=CacheConfig.MAXSIZE)
+def renders(*element):
     """Decorator for rendering dynamic elements based on given template.
     
     It improves the performance a lot by pre-compiling the templates.
@@ -47,7 +48,7 @@ def renders(*element: bytes) -> callable:
         ...     e.p()("{x}"),
         ...     e.p()("another {x}"),
         ... )
-        ... def render_paras(data: dict) -> dict:
+        ... def render_paras(data: dict):
         ...     return {"x": data["x"]}
         >>> 
         >>> render_paras({"x": "awesome paragraph"})
@@ -62,10 +63,10 @@ def renders(*element: bytes) -> callable:
         >>> render_paras({"x": "awesome paragraph"})
         <p>awesome paragraph</p><p>another awesome paragraph</p>
     """
-    template: str = render(*element)
+    template = render(*element)
 
-    def wrapped(func: callable) -> str:
-        def renderer(*args: object, **kwargs: object) -> str:
+    def wrapped(func):
+        def renderer(*args, **kwargs):
             return template.format(**func(*args, **kwargs))
 
         return renderer
@@ -74,7 +75,7 @@ def renders(*element: bytes) -> callable:
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
-def double_quote(txt: str) -> str:
+def double_quote(txt):
     """Double quote strings safely for attributes.
     
     Usage:
@@ -85,7 +86,7 @@ def double_quote(txt: str) -> str:
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
-def fmt_prop(key: str, val: str) -> str:
+def fmt_prop(key, val):
     """Format a key-value pair for an HTML tag."""
     key = key.rstrip("_").replace("_", "-")
     if val is None:
