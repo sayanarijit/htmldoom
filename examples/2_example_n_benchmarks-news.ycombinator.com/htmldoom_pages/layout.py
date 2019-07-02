@@ -168,7 +168,7 @@ from htmldoom import renders
         e.script(type_="text/javascript", src="hn.js?9UnLxU8WHV0ou3hRwndX"),
     )
 )
-def render_document(data: dict, news_renderer: callable) -> dict:
+def render_document(data, news_renderer):
     return {
         "newslist": "".join(
             news_renderer(rank=k + 1, news=v) for k, v in data["news"].items()

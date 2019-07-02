@@ -7,7 +7,7 @@ doctype = _render(b.doctype("html"))
 
 
 @renders(e.title()("{doctitle}"))
-def render_title(data: dict) -> dict:
+def render_title(data):
     return {"doctitle": data["doctitle"]}
 
 
@@ -98,22 +98,22 @@ def render_title(data: dict) -> dict:
         ),
     )
 )
-def render_head(data: dict, title_renderer: callable = render_title) -> dict:
+def render_head(data, title_renderer=render_title):
     return {"title": title_renderer(data=data)}
 
 
 @renders(e.body()("{contents}"))
-def render_body(data) -> None:
+def render_body(data):
     raise NotImplementedError("You are trying to render a base layout.")
 
 
 @renders(e.html(lang="en", prefix="og: http://ogp.me/ns#")("{head}", "{body}"))
 def render_html(
-    data: dict,
-    title_renderer: callable = render_title,
-    head_renderer: callable = render_head,
-    body_renderer: callable = render_body,
-) -> dict:
+    data,
+    title_renderer=render_title,
+    head_renderer=render_head,
+    body_renderer=render_body,
+):
     return {
         "head": head_renderer(data=data, title_renderer=render_title),
         "body": body_renderer(data=data),
@@ -122,12 +122,12 @@ def render_html(
 
 @renders("{doctype}{html}")
 def render_document(
-    data: dict,
-    title_renderer: callable = render_title,
-    head_renderer: callable = render_head,
-    body_renderer: callable = render_body,
-    html_renderer: callable = render_html,
-) -> dict:
+    data,
+    title_renderer=render_title,
+    head_renderer=render_head,
+    body_renderer=render_body,
+    html_renderer=render_html,
+):
     return {
         "doctype": doctype,
         "html": html_renderer(
@@ -139,7 +139,7 @@ def render_document(
     }
 
 
-def render(data: dict) -> str:
+def render(data):
     return render_document(data=data)
 
 

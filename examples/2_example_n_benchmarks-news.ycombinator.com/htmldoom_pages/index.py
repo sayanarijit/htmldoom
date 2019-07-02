@@ -48,11 +48,11 @@ from htmldoom_pages.layout import render_document
     ),
     e.tr(class_="spacer", style="height:5px"),
 )
-def render_news(rank: int, news: dict) -> dict:
+def render_news(rank, news):
     return dict(news, rank=rank)
 
 
-def render(data: dict) -> str:
+def render(data):
     return render_document(data=data, news_renderer=render_news)
 
 

@@ -6,7 +6,7 @@ with open("news.json") as f:
     news = json.load(f)
 
 
-def render(count: int = 500):
+def render(count=500):
     return _render({"news": {i: news for i in range(count)}})
 
 

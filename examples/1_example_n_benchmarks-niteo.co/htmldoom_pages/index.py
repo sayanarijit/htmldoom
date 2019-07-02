@@ -512,11 +512,11 @@ contents = _render(
 
 
 @renders(e.body()("{contents}"))
-def render_body(data: dict) -> str:
+def render_body(data):
     return {"contents": contents}
 
 
-def render(data: dict):
+def render(data):
     return render_document(data=data, body_renderer=render_body)
 
 
