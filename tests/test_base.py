@@ -17,3 +17,8 @@ def test_leaf_tag():
         render(leaf_tag("a")(leaf_tag("b")))
     with pytest.raises(ValueError):
         render(composite_tag("a")(composite_tag("b")))
+
+    with pytest.raises(ValueError):
+        render(leaf_tag("a")(leaf_tag("b")()))
+    with pytest.raises(ValueError):
+        render(composite_tag("a")(composite_tag("b")()))
