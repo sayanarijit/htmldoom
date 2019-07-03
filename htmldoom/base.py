@@ -46,7 +46,7 @@ def leaf_tag(tagname):
     @lru_cache(maxsize=CacheConfig.MAXSIZE)
     def set_props(*bool_props, **kv_props):
 
-        if bool_props and callable(bool_props[0]):
+        if bool_props and (callable(bool_props[0]) or isinstance(bool_props[0], bytes)):
             raise ValueError(
                 f"{tagname}(!WEIRD THINGS PASSED HERE!): here you pass tag attributes, not child elements."
                 " By the way, this is a leaf tag i.e. Doesn't support child elements."
@@ -84,7 +84,7 @@ def composite_tag(tagname):
     @lru_cache(maxsize=CacheConfig.MAXSIZE)
     def set_props(*bool_props, **kv_props):
 
-        if bool_props and callable(bool_props[0]):
+        if bool_props and (callable(bool_props[0]) or isinstance(bool_props[0], bytes)):
             raise ValueError(
                 f"{tagname}(!WEIRD THINGS PASSED HERE!): here you pass tag attributes, not child elements."
                 f" Follow this syntax: {tagname}(*args, **kwargs)(element1, element2, ...)"
