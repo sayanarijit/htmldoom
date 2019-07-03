@@ -165,6 +165,14 @@ readme = (
             ),
             e.ul()(
                 e.li()(
+                    e.a(href="https://github.com/sayanarijit/flask-htmldoom")(
+                        e.b()("Flask-Htmldoom")
+                    ),
+                    e.span()(": htmldoom integration for Flask"),
+                )
+            ),
+            e.ul()(
+                e.li()(
                     e.a(href="https://github.com/sayanarijit/pyramid_htmldoom")(
                         e.b()("pyramid_htmldoom")
                     ),
