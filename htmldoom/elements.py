@@ -3,7 +3,7 @@
 Example:
     >>> from htmldoom import render, elements as e
     >>> render(e.p(class_="comeclass")("This is a paragraph"))
-    <p class_="someclass">This is a paragraph</p>
+    <p class="someclass">This is a paragraph</p>
 """
 
 from htmldoom.base import composite_tag, leaf_tag
