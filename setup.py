@@ -56,6 +56,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     platforms=["Any"],
+    zip_safe=False,
     keywords="html rendering framework",
     packages=find_packages(
         exclude=["contrib", "docs", "tests", "examples", "benchmark"]

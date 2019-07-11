@@ -11,7 +11,7 @@ from htmldoom.conf import CacheConfig
 from htmldoom.util import fmt_prop
 from htmldoom.util import render as _render
 
-__all__ = ["composite_tag", "leaf_tag", "txt", "raw", "comment"]
+__all__ = ["doctype", "composite_tag", "leaf_tag", "txt", "raw", "comment"]
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)

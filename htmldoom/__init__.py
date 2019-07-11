@@ -3,7 +3,7 @@ __email__ = "sayanarijit@gmail.com"
 __homepage__ = "https://github.com/sayanarijit/htmldoom"
 __description__ = "An intuitive, high performance HTML rendering framework"
 
-__version__ = "v0.6.5"
+__version__ = "v0.6.6"
 __license__ = "MIT"
 __all__ = [
     "__author__",
@@ -14,7 +14,7 @@ __all__ = [
     "__license__",
     "elements",
     "functions",
-    "document",
+    "doctype",
     "render",
     "renders",
     "conf",

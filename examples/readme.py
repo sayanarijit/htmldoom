@@ -55,6 +55,16 @@ readme = (
         ),
     ),
     e.p()(
+        e.h2()("A custom tag"),
+        e.pre()(
+            ">>> from htmldoom import render, composite_tag\n"
+            ">>> \n"
+            '>>> clipboard_copy = composite_tag("clipboard-copy")\n'
+            '>>> print(render(clipboard_copy(value="foo")("Copy Me")))\n'
+            '<clipboard-copy value="foo">Copy Me</clipboard-copy>'
+        ),
+    ),
+    e.p()(
         e.h2()("A fast dynamic elements rendering mechanism"),
         e.p()("Choose whichever syntax suits you:"),
         e.h3()("Syntax 1"),
@@ -87,7 +97,7 @@ readme = (
             e.b()("NOTE: "),
             "This mechanism compiles the template when the file loads and reuse it.",
             e.br(),
-            e.pre()(b"renders( -- compile-time code -- )( -- runtime code -- )"),
+            e.pre()("renders( ...compile-time code... )( ...runtime code... )"),
             e.br(),
             "The more execution you move from runtime to compile-time, the faster it gets.",
             e.br(),
@@ -103,7 +113,7 @@ readme = (
         ),
     ),
     e.p()(
-        e.h2()("A functional style foreach loop with a switch case"),
+        e.h2()("A functional style foreach loop with a switch case (probably useless)"),
         e.pre()(
             ">>> from htmldoom import elements as e\n"
             ">>> from htmldoom import functions as fn\n"
@@ -137,13 +147,15 @@ readme = (
         e.p()(
             "Although performance is not the primary goal here, it should not be a roadblock.",
             " htmldoom uses pure functions with hashable input parameters as elements.",
-            " Hence, it makes effective use of caching internally. It also offers friendly a",
+            " Hence, it makes effective use of caching internally. It also offers a friendly",
             " mechanism to pre-render the static parts of the page using the `@renders` decorator",
             " when it compiles to bytecode. ",
             e.br(),
             "Also since it helps you (probably forces you) to refactor the webpage",
             " into multiple render functions, you are free to use whatever optimisation",
-            " you prefer. Try putting an `@lru_cache` in a render function?",
+            " you prefer. Try putting an ",
+            e.code()("@lru_cache"),
+            " in a render function?",
         ),
         e.h3()("Is there any benchmark?"),
         e.p()(
@@ -189,6 +201,12 @@ readme = (
                 href="https://github.com/sayanarijit/htmldoom/tree/master/CONTRIBUTING.md"
             )(" contributing guidelines."),
         ),
+    ),
+    e.small()(
+        e.i()("NOTE: This file was generated using "),
+        e.a(
+            href="https://github.com/sayanarijit/htmldoom/blob/master/examples/readme.py"
+        )(e.i()("this script.")),
     ),
 )
 
