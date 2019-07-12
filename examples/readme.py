@@ -150,7 +150,7 @@ readme = (
             " Hence, it makes effective use of caching internally. It also offers a friendly",
             " mechanism to pre-render the static parts of the page using the ",
             e.code()("@renders"),
-            " decorator when it compiles to bytecode. ",
+            " decorator and reuse it. ",
             e.br(),
             "Also since it helps you (probably forces you) to refactor the webpage",
             " into multiple render functions, you are free to use whatever optimisation",

@@ -8,7 +8,7 @@ __all__ = ["render", "renders", "double_quote", "fmt_prop"]
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
-def render(*doms):
+def render(*elements):
     """Use it to render DOM elements.
     
     Example:
@@ -18,26 +18,26 @@ def render(*doms):
         >>> print(render(p()("render me"), p()("me too")))
         <p>render me</p><p>me too</p>
     """
-    if not doms:
+    if not elements:
         return ""
 
-    if len(doms) == 1:
-        dom = doms[0]
-        if callable(dom):
+    if len(elements) == 1:
+        el = elements[0]
+        if callable(el):
             # Forgot to call with no arguments? no worries...
-            dom = dom()
-        if isinstance(dom, str):
-            return escape(dom)
-        if isinstance(dom, bytes):
-            return dom.decode()
+            el = el()
+        if isinstance(el, str):
+            return escape(el)
+        if isinstance(el, bytes):
+            return el.decode()
         raise ValueError(
-            f"{dom}: expected either of str, bytes, or a callable but got {type(dom)}"
+            f"{el}: expected either of str, bytes, or a callable but got {type(el)}"
         )
-    return "".join(map(render, doms))
+    return "".join(map(render, elements))
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
-def renders(*element):
+def renders(*elements):
     """Decorator for rendering dynamic elements based on given template.
     
     It improves the performance a lot by pre-compiling the templates.
@@ -63,7 +63,7 @@ def renders(*element):
         >>> render_paras({"x": "awesome paragraph"})
         <p>awesome paragraph</p><p>another awesome paragraph</p>
     """
-    template = render(*element)
+    template = render(*elements)
 
     def wrapped(func):
         def renderer(*args, **kwargs):
