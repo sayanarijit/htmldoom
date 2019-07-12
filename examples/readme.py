@@ -1,11 +1,15 @@
 """The README.md generator"""
 
 from htmldoom import elements as e
-from htmldoom import render
+from htmldoom import render, renders
 
 
 def badge(href: str, src: str, alt: str):
     return e.span()(e.a(href=href)(e.img(src=src, alt=alt)))
+
+
+def plugin(title: str, href: str, description: str):
+    return e.ul()(e.li()(e.a(href=href)(e.b()(title)), e.span()(f": {description}")))
 
 
 readme = (
@@ -170,29 +174,20 @@ readme = (
     e.p()(
         e.h2()("Plugins and ecosystem"),
         e.p()(
-            e.ul()(
-                e.li()(
-                    e.a(href="https://github.com/sayanarijit/moodlmth")(
-                        e.b()("moodlmth")
-                    ),
-                    e.span()(": Convert raw HTML pages into python source code"),
-                )
+            plugin(
+                title="moodlmth",
+                href="https://github.com/sayanarijit/moodlmth",
+                description="Convert raw HTML pages into python source code",
             ),
-            e.ul()(
-                e.li()(
-                    e.a(href="https://github.com/sayanarijit/flask-htmldoom")(
-                        e.b()("Flask-Htmldoom")
-                    ),
-                    e.span()(": htmldoom integration for Flask"),
-                )
+            plugin(
+                title="Flask-Htmldoom",
+                href="https://github.com/sayanarijit/flask-htmldoom",
+                description="htmldoom integration for Flask",
             ),
-            e.ul()(
-                e.li()(
-                    e.a(href="https://github.com/sayanarijit/pyramid_htmldoom")(
-                        e.b()("pyramid_htmldoom")
-                    ),
-                    e.span()(": htmldoom rendering library plugin for Pyramid"),
-                )
+            plugin(
+                title="pyramid_htmldoom",
+                href="https://github.com/sayanarijit/pyramid_htmldoom",
+                description="htmldoom rendering library plugin for Pyramid",
             ),
         ),
     ),
@@ -205,7 +200,7 @@ readme = (
             )(" contributing guidelines."),
         ),
     ),
-    e.small()(
+    e.p()(
         e.i()("NOTE: This file was generated using "),
         e.a(
             href="https://github.com/sayanarijit/htmldoom/blob/master/examples/readme.py"
