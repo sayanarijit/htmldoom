@@ -95,11 +95,13 @@ readme = (
         ),
         e.p()(
             e.b()("NOTE: "),
-            "This mechanism compiles the template when the file loads and reuse it.",
+            "This mechanism pre-renders the template when the file loads and reuse it.",
             e.br(),
-            e.pre()("renders( ...compile-time code... )( ...runtime code... )"),
+            e.pre()(
+                "renders( ...pre-rendered template... )( ...dynamic rendering logic... )"
+            ),
             e.br(),
-            "The more execution you move from runtime to compile-time, the faster it gets.",
+            "The more elements you pre-render as template, the faster it gets.",
             e.br(),
             "If you properly use this mechanism and refractor your dynamic pages into smaller"
             " components, it might surpass the performance of traditional template rendering engines.",
@@ -108,7 +110,7 @@ readme = (
             e.b()("WARNING: "),
             "It performs a ",
             e.code()('"{rendered_elements}".format(**returned_data)'),
-            ". So each `{` or `}` in the compile-time code needs to be",
+            ". So each `{` or `}` in the pre-rendered template needs to be",
             " escaped with `{{` or `}}`.",
         ),
     ),
