@@ -147,7 +147,7 @@ readme = (
         ),
         e.h3()("What about performance?"),
         e.p()(
-            "Although performance is not the primary goal here, it should not be a roadblock.",
+            "Although performance is not the primary goal here, it's been given a very high priority.",
             " htmldoom uses pure functions with hashable input parameters as elements.",
             " Hence, it makes effective use of caching internally. It also offers a friendly",
             " mechanism to pre-render the static parts of the page using the ",
