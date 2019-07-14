@@ -107,7 +107,7 @@ readme = (
             e.br(),
             "The more elements you pre-render as template, the faster it gets.",
             e.br(),
-            "If you properly use this mechanism and refractor your dynamic pages into smaller"
+            "If you properly use this mechanism and refactor your dynamic pages into smaller"
             " components, it might surpass the performance of traditional template rendering engines.",
         ),
         e.p()(
