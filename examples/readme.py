@@ -64,7 +64,9 @@ readme = (
             ">>> from htmldoom import render, composite_tag\n"
             ">>> \n"
             '>>> clipboard_copy = composite_tag("clipboard-copy")\n'
-            '>>> print(render(clipboard_copy(value="foo")("Copy Me")))\n'
+            ">>> print(render(\n"
+            '...     clipboard_copy(value="foo")("Copy Me")\n'
+            "... ))\n"
             '<clipboard-copy value="foo">Copy Me</clipboard-copy>'
         ),
     ),
@@ -82,7 +84,7 @@ readme = (
             "... def render_paras(data: dict) -> dict:\n"
             '...     return {"x": data["x"]}\n'
             ">>> \n"
-            '>>> render_paras({"x": "awesome paragraph"})\n'
+            '>>> print(render_paras({"x": "awesome paragraph"}))\n'
             "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
         ),
         e.h3()("Syntax 2"),
@@ -94,7 +96,7 @@ readme = (
             '...     e.p()("another {x}"),\n'
             '... )(lambda data: {"x": data["x"]})\n'
             ">>> \n"
-            '>>> render_paras({"x": "awesome paragraph"})\n'
+            '>>> print(render_paras({"x": "awesome paragraph"}))\n'
             "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
         ),
         e.p()(

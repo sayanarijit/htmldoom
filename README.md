@@ -6,7 +6,9 @@
 &lt;textarea required class=&quot;input&quot;&gt;text&lt;/textarea&gt;</pre></p><p><h2>A custom tag</h2><pre>&gt;&gt;&gt; from htmldoom import render, composite_tag
 &gt;&gt;&gt; 
 &gt;&gt;&gt; clipboard_copy = composite_tag(&quot;clipboard-copy&quot;)
-&gt;&gt;&gt; print(render(clipboard_copy(value=&quot;foo&quot;)(&quot;Copy Me&quot;)))
+&gt;&gt;&gt; print(render(
+...     clipboard_copy(value=&quot;foo&quot;)(&quot;Copy Me&quot;)
+... ))
 &lt;clipboard-copy value=&quot;foo&quot;&gt;Copy Me&lt;/clipboard-copy&gt;</pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Syntax 1</h3><pre>&gt;&gt;&gt; from htmldoom import renders, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; @renders(
@@ -16,7 +18,7 @@
 ... def render_paras(data: dict) -&gt; dict:
 ...     return {&quot;x&quot;: data[&quot;x&quot;]}
 &gt;&gt;&gt; 
-&gt;&gt;&gt; render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;})
+&gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
 </pre><h3>Syntax 2</h3><pre>&gt;&gt;&gt; from htmldoom import renders, elements as e
 &gt;&gt;&gt; 
@@ -25,7 +27,7 @@
 ...     e.p()(&quot;another {x}&quot;),
 ... )(lambda data: {&quot;x&quot;: data[&quot;x&quot;]})
 &gt;&gt;&gt; 
-&gt;&gt;&gt; render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;})
+&gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
 </pre><p><b>NOTE: </b>This mechanism pre-renders the template when the file loads and reuse it.<br /><pre>renders( ...pre-rendered template... )( ...dynamic rendering logic... )</pre><br />The more elements you pre-render as template, the faster it gets.<br />If you properly use this mechanism and refactor your dynamic pages into smaller components, it might surpass the performance of traditional template rendering engines.</p><p><b>WARNING: </b>It performs a <code>&quot;{rendered_elements}&quot;.format(**returned_data)</code>. So each `{` or `}` in the pre-rendered template needs to be escaped with `{{` or `}}`.</p></p><p><h2>A functional style foreach loop with a switch case (probably useless)</h2><pre>&gt;&gt;&gt; from htmldoom import elements as e
 &gt;&gt;&gt; from htmldoom import functions as fn
