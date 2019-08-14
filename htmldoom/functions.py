@@ -63,7 +63,7 @@ def foreach(data):
     
     Example:
         >>> list(foreach([1, 2, 4])(lambda n: n * 2))
-        [2, 4, 3]
+        [2, 4, 8]
     """
 
     def wrapped(func):
