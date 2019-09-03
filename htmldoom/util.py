@@ -1,3 +1,5 @@
+"""Some utility functions."""
+
 from functools import lru_cache
 from html import escape
 from re import sub
