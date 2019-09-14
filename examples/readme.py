@@ -1,5 +1,7 @@
 """The README.md generator"""
 
+from textwrap import dedent
+
 from htmldoom import elements as e
 from htmldoom import render, renders
 
@@ -50,24 +52,33 @@ readme = (
     e.p()(
         e.h2()("A basic tag"),
         e.pre()(
-            ">>> from htmldoom import render, elements as e\n"
-            ">>> \n"
-            ">>> print(render(\n"
-            '...     e.textarea("required", class_="input")("text")\n'
-            "... ))\n"
-            '<textarea required class="input">text</textarea>'
+            dedent(
+                """
+                >>> from htmldoom import render, elements as e
+                >>> 
+                >>> print(render(
+                ...     e.textarea("required", class_="input")("text")
+                ... ))
+                <textarea required class="input">text</textarea>
+                """
+            )
         ),
     ),
     e.p()(
         e.h2()("A custom tag"),
         e.pre()(
-            ">>> from htmldoom import render, composite_tag\n"
-            ">>> \n"
-            '>>> clipboard_copy = composite_tag("clipboard-copy")\n'
-            ">>> print(render(\n"
-            '...     clipboard_copy(value="foo")("Copy Me")\n'
-            "... ))\n"
-            '<clipboard-copy value="foo">Copy Me</clipboard-copy>'
+            dedent(
+                """
+                >>> from htmldoom import render, composite_tag
+                >>> 
+                >>> clipboard_copy = composite_tag("clipboard-copy")
+                >>> 
+                >>> print(render(
+                ...     clipboard_copy(value="foo")("Copy Me")
+                ... ))
+                <clipboard-copy value="foo">Copy Me</clipboard-copy>
+                """
+            )
         ),
     ),
     e.p()(
@@ -75,29 +86,37 @@ readme = (
         e.p()("Choose whichever syntax suits you:"),
         e.h3()("Syntax 1"),
         e.pre()(
-            ">>> from htmldoom import renders, elements as e\n"
-            ">>> \n"
-            ">>> @renders(\n"
-            '...     e.p()("{x}"),\n'
-            '...     e.p()("another {x}"),\n'
-            "... )\n"
-            "... def render_paras(data: dict) -> dict:\n"
-            '...     return {"x": data["x"]}\n'
-            ">>> \n"
-            '>>> print(render_paras({"x": "awesome paragraph"}))\n'
-            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
+            dedent(
+                """
+                >>> from htmldoom import renders, elements as e
+                >>> 
+                >>> @renders(
+                ...     e.p()("{x}"),
+                ...     e.p()("another {x}"),
+                ... )
+                ... def render_paras(data: dict) -> dict:
+                ...     return {"x": data["x"]}
+                >>> 
+                >>> print(render_paras({"x": "awesome paragraph"}))
+                <p>awesome paragraph</p><p>another awesome paragraph</p>
+                """
+            )
         ),
         e.h3()("Syntax 2"),
         e.pre()(
-            ">>> from htmldoom import renders, elements as e\n"
-            ">>> \n"
-            ">>> render_paras = renders(\n"
-            '...     e.p()("{x}"),\n'
-            '...     e.p()("another {x}"),\n'
-            '... )(lambda data: {"x": data["x"]})\n'
-            ">>> \n"
-            '>>> print(render_paras({"x": "awesome paragraph"}))\n'
-            "<p>awesome paragraph</p><p>another awesome paragraph</p>\n"
+            dedent(
+                """
+                >>> from htmldoom import renders, elements as e
+                >>> 
+                >>> render_paras = renders(
+                ...     e.p()("{x}"),
+                ...     e.p()("another {x}"),
+                ... )(lambda data: {"x": data["x"]})
+                >>> 
+                >>> print(render_paras({"x": "awesome paragraph"}))
+                <p>awesome paragraph</p><p>another awesome paragraph</p>
+                """
+            )
         ),
         e.p()(
             e.b()("NOTE: "),
@@ -123,20 +142,24 @@ readme = (
     e.p()(
         e.h2()("A functional style foreach loop with a switch case (probably useless)"),
         e.pre()(
-            ">>> from htmldoom import elements as e\n"
-            ">>> from htmldoom import functions as fn\n"
-            ">>> \n"
-            '>>> tuple(fn.foreach(["good", "bad", "evil"])(\n'
-            "...     lambda x: fn.switch({\n"
-            '...         x == "good": lambda: e.span(style="color: green")(f"this is {x}"),\n'
-            '...         x == "bad": lambda: e.span(style="color: yellow")(f"this is {x}"),\n'
-            '...         x == "evil": lambda: e.span(style="color: red")(f"this is {x}"),\n'
-            "...         fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),\n"
-            "...     })\n"
-            "... ))\n"
-            """(b'<span style="color: green">this is good</span>',\n"""
-            """ b'<span style="color: yellow">this is bad</span>',\n"""
-            """ b'<span style="color: red">this is evil</span>')\n"""
+            dedent(
+                """
+                >>> from htmldoom import elements as e
+                >>> from htmldoom import functions as fn
+                >>> 
+                >>> tuple(fn.foreach(["good", "bad", "evil"])(
+                ...     lambda x: fn.switch({
+                ...         x == "good": lambda: e.span(style="color: green")(f"this is {x}"),
+                ...         x == "bad": lambda: e.span(style="color: yellow")(f"this is {x}"),
+                ...         x == "evil": lambda: e.span(style="color: red")(f"this is {x}"),
+                ...         fn.Case.DEFAULT: lambda: fn.Error.throw(ValueError(x)),
+                ...     })
+                ... ))
+                (b'<span style="color: green">this is good</span>',
+                 b'<span style="color: yellow">this is bad</span>',
+                 b'<span style="color: red">this is evil</span>')
+                 """
+            )
         ),
     ),
     e.p()(

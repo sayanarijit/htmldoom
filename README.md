@@ -1,15 +1,21 @@
-<h1 align="center">htmldoom</h1><p align="center">An intuitive, high performance HTML rendering framework</p><p align="center"><span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/v/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/pyversions/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://travis-ci.org/sayanarijit/htmldoom"><img src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master" alt="Build Status" /></a></span>&nbsp;<span><a href="https://codecov.io/gh/sayanarijit/htmldoom"><img src="https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg" alt="codecov" /></a></span>&nbsp;<span><a href="https://github.com/python/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a></span></p><h2>Usage</h2><p><h2>A basic tag</h2><pre>&gt;&gt;&gt; from htmldoom import render, elements as e
+<h1 align="center">htmldoom</h1><p align="center">An intuitive, high performance HTML rendering framework</p><p align="center"><span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/v/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/pyversions/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://travis-ci.org/sayanarijit/htmldoom"><img src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master" alt="Build Status" /></a></span>&nbsp;<span><a href="https://codecov.io/gh/sayanarijit/htmldoom"><img src="https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg" alt="codecov" /></a></span>&nbsp;<span><a href="https://github.com/python/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a></span></p><h2>Usage</h2><p><h2>A basic tag</h2><pre>
+&gt;&gt;&gt; from htmldoom import render, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; print(render(
 ...     e.textarea(&quot;required&quot;, class_=&quot;input&quot;)(&quot;text&quot;)
 ... ))
-&lt;textarea required class=&quot;input&quot;&gt;text&lt;/textarea&gt;</pre></p><p><h2>A custom tag</h2><pre>&gt;&gt;&gt; from htmldoom import render, composite_tag
+&lt;textarea required class=&quot;input&quot;&gt;text&lt;/textarea&gt;
+</pre></p><p><h2>A custom tag</h2><pre>
+&gt;&gt;&gt; from htmldoom import render, composite_tag
 &gt;&gt;&gt; 
 &gt;&gt;&gt; clipboard_copy = composite_tag(&quot;clipboard-copy&quot;)
+&gt;&gt;&gt; 
 &gt;&gt;&gt; print(render(
 ...     clipboard_copy(value=&quot;foo&quot;)(&quot;Copy Me&quot;)
 ... ))
-&lt;clipboard-copy value=&quot;foo&quot;&gt;Copy Me&lt;/clipboard-copy&gt;</pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Syntax 1</h3><pre>&gt;&gt;&gt; from htmldoom import renders, elements as e
+&lt;clipboard-copy value=&quot;foo&quot;&gt;Copy Me&lt;/clipboard-copy&gt;
+</pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Syntax 1</h3><pre>
+&gt;&gt;&gt; from htmldoom import renders, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; @renders(
 ...     e.p()(&quot;{x}&quot;),
@@ -20,7 +26,8 @@
 &gt;&gt;&gt; 
 &gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
-</pre><h3>Syntax 2</h3><pre>&gt;&gt;&gt; from htmldoom import renders, elements as e
+</pre><h3>Syntax 2</h3><pre>
+&gt;&gt;&gt; from htmldoom import renders, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; render_paras = renders(
 ...     e.p()(&quot;{x}&quot;),
@@ -29,7 +36,8 @@
 &gt;&gt;&gt; 
 &gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
-</pre><p><b>NOTE: </b>This mechanism pre-renders the template when the file loads and reuse it.<br /><pre>renders( ...pre-rendered template... )( ...dynamic rendering logic... )</pre><br />The more elements you pre-render as template, the faster it gets.<br />If you properly use this mechanism and refactor your dynamic pages into smaller components, it might surpass the performance of traditional template rendering engines.</p><p><b>WARNING: </b>It performs a <code>&quot;{rendered_elements}&quot;.format(**returned_data)</code>. So each `{` or `}` in the pre-rendered template needs to be escaped with `{{` or `}}`.</p></p><p><h2>A functional style foreach loop with a switch case (probably useless)</h2><pre>&gt;&gt;&gt; from htmldoom import elements as e
+</pre><p><b>NOTE: </b>This mechanism pre-renders the template when the file loads and reuse it.<br /><pre>renders( ...pre-rendered template... )( ...dynamic rendering logic... )</pre><br />The more elements you pre-render as template, the faster it gets.<br />If you properly use this mechanism and refactor your dynamic pages into smaller components, it might surpass the performance of traditional template rendering engines.</p><p><b>WARNING: </b>It performs a <code>&quot;{rendered_elements}&quot;.format(**returned_data)</code>. So each `{` or `}` in the pre-rendered template needs to be escaped with `{{` or `}}`.</p></p><p><h2>A functional style foreach loop with a switch case (probably useless)</h2><pre>
+&gt;&gt;&gt; from htmldoom import elements as e
 &gt;&gt;&gt; from htmldoom import functions as fn
 &gt;&gt;&gt; 
 &gt;&gt;&gt; tuple(fn.foreach([&quot;good&quot;, &quot;bad&quot;, &quot;evil&quot;])(
