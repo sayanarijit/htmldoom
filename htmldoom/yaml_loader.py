@@ -6,11 +6,10 @@ Or the `EXAMPLE_FORMAT` variable in this module.
 
 from functools import lru_cache
 
-from yaml import SafeLoader, dump, load
-
 from htmldoom import render
 from htmldoom.base import composite_tag, leaf_tag
 from htmldoom.conf import CacheConfig
+from yaml import SafeLoader, dump, load
 
 EXAMPLE_FORMAT = """
 * Leaf tag: <tagname />
@@ -86,7 +85,25 @@ def _to_element(tagname, attributes=None, inner=None):
 
 
 def parse(data):
-    """Parses given data data into HTML elements."""
+    """Parses given data data into HTML elements.
+
+    Arguments:
+        data union(str, bytes, dict, list):
+            Data to parse.
+
+    Examples:
+        >>> parse({
+        ...     "div": [
+        ...         {"class": "row"},
+        ...         [
+        ...             "This is an element.",
+        ...             " ",
+        ...             {"i": [["*"]]},
+        ...         ],
+        ...     ]
+        ... })
+        b'<div class="row">This is an element. <i>*</i></div>'
+    """
 
     if isinstance(data, dict):
 
