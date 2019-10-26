@@ -1,0 +1,50 @@
+leaf_tag:
+  empty:
+    # <sometag />
+    sometag: [{}]
+
+  with_attrs:
+    # <sometag class="row" />
+    sometag: [{ class: row }]
+
+  with_multiple_tags:
+    # <sometag />
+    # <sometag />
+  - sometag: [{}]
+  - "\n"
+  - sometag: [{}]
+
+composite_tag:
+  empty:
+    # <sometag><sometag/>
+    sometag: [[]]
+
+  with_attrs:
+    # <sometag class="row"></sometag>
+    sometag: [{ class: row }, []]
+
+  with_vals:
+    # <sometag>val1val2</sometag>
+    sometag: [[ val1, val2 ]]
+
+  with_attrs_and_vals:
+    # <sometag class="row">val1val2</sometag>
+    sometag:
+    - class: row
+    - - val1
+      - val2
+  with_nested_tag:
+    # <sometag class="row"><i>val</i></sometag>
+    sometag:
+    - class: row
+    - - i:
+        - - val
+
+  with_multiple_tags:
+    # <sometag>1</sometag>
+    # <sometag>2</sometag>
+  - sometag:
+    - - "1"
+  - "\n"
+  - sometag:
+    - - "2"

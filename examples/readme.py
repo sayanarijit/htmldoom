@@ -84,7 +84,7 @@ readme = (
     e.p()(
         e.h2()("A fast dynamic elements rendering mechanism"),
         e.p()("Choose whichever syntax suits you:"),
-        e.h3()("Syntax 1"),
+        e.h3()("Python syntax"),
         e.pre()(
             dedent(
                 """
@@ -94,15 +94,38 @@ readme = (
                 ...     e.p()("{x}"),
                 ...     e.p()("another {x}"),
                 ... )
-                ... def render_paras(data: dict) -> dict:
+                ... def render_paras(data):
                 ...     return {"x": data["x"]}
-                >>> 
+                ... 
                 >>> print(render_paras({"x": "awesome paragraph"}))
                 <p>awesome paragraph</p><p>another awesome paragraph</p>
                 """
             )
         ),
-        e.h3()("Syntax 2"),
+        e.h3()("YAML Syntax"),
+        e.pre()(
+            dedent(
+                """
+                >>> # path/to/components.yml
+                >>> # ----------------------
+                >>> # paras:
+                >>> #   awesome:
+                >>> #   - p: [[ "{x}" ]]
+                >>> #   - p:
+                >>> #     - - Another {x}
+                >>> 
+                >>> from htmldoom import renders
+                >>> from htmldoom.yaml_loader import loadyaml as ly
+                >>> 
+                >>> @renders(ly("path/to/components.yml", "paras.awesome"))
+                ... def render_paras(data):
+                ...     return {"x": data["x"]}
+                ... 
+                >>> print(render_paras({"x": "awesome paragraph"}))
+                <p>awesome paragraph</p><p>another awesome paragraph</p>
+                """
+            )
+        ),
         e.pre()(
             dedent(
                 """

@@ -18,7 +18,8 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
-testing_requires = [
+install_requires = ["pyyaml"]
+testing_requires = install_requires + [
     "pytest>=4.4.1",
     "pytest-cov>=2.7.1",
     "black>=19.3b0",
@@ -43,7 +44,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
