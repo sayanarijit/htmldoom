@@ -106,8 +106,7 @@ readme = (
         e.pre()(
             dedent(
                 """
-                >>> # path/to/components.yml
-                >>> # ----------------------
+                >>> # $ cat path/to/components.yml
                 >>> # paras:
                 >>> #   awesome:
                 >>> #   - p: [[ "{x}" ]]
@@ -121,21 +120,6 @@ readme = (
                 ... def render_paras(data):
                 ...     return {"x": data["x"]}
                 ... 
-                >>> print(render_paras({"x": "awesome paragraph"}))
-                <p>awesome paragraph</p><p>another awesome paragraph</p>
-                """
-            )
-        ),
-        e.pre()(
-            dedent(
-                """
-                >>> from htmldoom import renders, elements as e
-                >>> 
-                >>> render_paras = renders(
-                ...     e.p()("{x}"),
-                ...     e.p()("another {x}"),
-                ... )(lambda data: {"x": data["x"]})
-                >>> 
                 >>> print(render_paras({"x": "awesome paragraph"}))
                 <p>awesome paragraph</p><p>another awesome paragraph</p>
                 """

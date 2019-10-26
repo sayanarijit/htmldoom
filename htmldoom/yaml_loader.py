@@ -1,17 +1,18 @@
 """Helpers to render YAML data into HTML components.
 
-Find the examples YAML formats in: tests/assets/yaml_components/correct.yml
-Or the `EXAMPLE_FORMAT` variable in this module.
+Find the examples YAML formats in: tests/assets/yaml_components/valid.yml
+Or the `VALID_FORMAT` variable in this module.
 """
 
 from functools import lru_cache
 
+from yaml import SafeLoader, dump, load
+
 from htmldoom import render
 from htmldoom.base import composite_tag, leaf_tag
 from htmldoom.conf import CacheConfig
-from yaml import SafeLoader, dump, load
 
-EXAMPLE_FORMAT = """
+VALID_FORMAT = """
 * Leaf tag: <tagname />
 ----------------------------
 tagname: [{}]
@@ -76,7 +77,7 @@ def _to_element(tagname, attributes=None, inner=None):
         else:
             raise ValueError(
                 f"{kv_props}\n^^^ `{v}`: Expected `str` but got `{type(v)}`. "
-                f"Some examples for you:\n{EXAMPLE_FORMAT}"
+                f"Some examples for you:\n{VALID_FORMAT}"
             )
 
     if inner is None:
@@ -109,8 +110,8 @@ def parse(data):
 
         if len(data) != 1:
             raise ValueError(
-                "\n{wrong}^^^ Incorrect format. Correct format is:\n{correct}".format(
-                    wrong=dump(data, indent=2), correct=EXAMPLE_FORMAT
+                "\n{invalid}^^^ Invalid format. Valid format is:\n{valid}".format(
+                    invalid=dump(data, indent=2), valid=VALID_FORMAT
                 )
             )
 
@@ -126,8 +127,8 @@ def parse(data):
                 inner = parse(val)
             else:
                 raise ValueError(
-                    "\n{wrong}^^^ Incorrect format. Correct format is:\n{correct}".format(
-                        wrong=dump(data, indent=2), correct=EXAMPLE_FORMAT
+                    "\n{invalid}^^^ Invalid format. Valid format is:\n{valid}".format(
+                        invalid=dump(data, indent=2), valid=VALID_FORMAT
                     )
                 )
 
@@ -143,8 +144,8 @@ def parse(data):
 
         else:
             raise ValueError(
-                "\n{wrong}^^^ Incorrect format. Correct format is:\n{correct}".format(
-                    wrong=dump(data, indent=2), correct=EXAMPLE_FORMAT
+                "\n{invalid}^^^ Invalid format. Valid format is:\n{valid}".format(
+                    invalid=dump(data, indent=2), valid=VALID_FORMAT
                 )
             )
 
@@ -157,7 +158,7 @@ def parse(data):
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
-def loadyaml(path, directive=None):
+def loadyaml(path, directive=None, static=False):
     """Loads given YAML file/directive into HTML
 
     Arguments:
@@ -166,19 +167,29 @@ def loadyaml(path, directive=None):
             Dot (.) separated values to find component definition.
             If not specified, the whole content of the file is assumed
             to be the component definition.
+        static (bool):
+            If True, all the `{` and `}` will be replaced
+            with `{{` and `}}` respectively.
     
     Examples:
-        >>> loadyaml("/path/to/components.yml")
-        # Loads the whole file as HTML component.
-        # Example file: "{ p: }"
+        >>> # $ cat path/to/component.yml
+        >>> # p:
+        >>> # - - "{foo}"
+        >>> 
+        >>> loadyaml("/path/to/component.yml")
+        b<p>{foo}</p>
+        >>> 
+        >>> loadyaml("/path/to/components.yml", static=True)
+        b<p>{{foo}}</p>
 
-        >>> loadyaml("/path/to/components.yml", "paragraph")
-        # Loads the component defined in "paragraph" directive in the file.
-        # Example file: "{paragraph: {p: [{class: row}, ["This is a para"]]}}"
-        
-        >>> loadyaml("/path/to/components.yml", "paragraphs.first")
-        # Loads the component defined in "paragraph.first" directive in the file.
-        # Example file: "{paragraph: {first: {p: [{class: row}, ["This is the first para"]]}}}"
+        >>> # $ cat path/to/components.yml
+        >>> # paragraphs:
+        >>> #   myfav:
+        >>> #   - p:
+        >>> #     - - "{foo}"
+        >>> 
+        >>> loadyaml("/path/to/components.yml", "paragraph.myfav", static=True)
+        b<p>{{foo}}</p>
     """
     with open(path) as f:
         elements = load(f, Loader=SafeLoader)
@@ -188,4 +199,7 @@ def loadyaml(path, directive=None):
         for node in nodes:
             elements = elements[node]
 
-    return parse(elements)
+    data = parse(elements)
+    if static:
+        data = data.decode().replace("{", "{{").replace("}", "}}").encode()
+    return data

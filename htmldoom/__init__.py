@@ -3,7 +3,7 @@ __email__ = "sayanarijit@gmail.com"
 __homepage__ = "https://github.com/sayanarijit/htmldoom"
 __description__ = "An intuitive, high performance HTML rendering framework"
 
-__version__ = "v0.7.0"
+__version__ = "v0.7.1"
 __license__ = "MIT"
 __all__ = [
     "__author__",
@@ -19,8 +19,10 @@ __all__ = [
     "txt",
     "comment",
     "CacheConfig",
+    "loadraw",
+    "loadtxt",
 ]
 
 from htmldoom.base import comment, doctype, raw, txt
 from htmldoom.conf import CacheConfig
-from htmldoom.util import render, renders
+from htmldoom.util import loadraw, loadtxt, render, renders
