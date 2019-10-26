@@ -1,0 +1,7 @@
+div:
+- - span:
+    - boolattr: true
+      style: "background-color: red"
+      class: "alert"
+    - - This is an Alert!
+  - i: [{ class: horror }, []]

@@ -14,19 +14,37 @@
 ...     clipboard_copy(value=&quot;foo&quot;)(&quot;Copy Me&quot;)
 ... ))
 &lt;clipboard-copy value=&quot;foo&quot;&gt;Copy Me&lt;/clipboard-copy&gt;
-</pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Syntax 1</h3><pre>
+</pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Python syntax</h3><pre>
 &gt;&gt;&gt; from htmldoom import renders, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; @renders(
 ...     e.p()(&quot;{x}&quot;),
 ...     e.p()(&quot;another {x}&quot;),
 ... )
-... def render_paras(data: dict) -&gt; dict:
+... def render_paras(data):
 ...     return {&quot;x&quot;: data[&quot;x&quot;]}
-&gt;&gt;&gt; 
+... 
 &gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
-</pre><h3>Syntax 2</h3><pre>
+</pre><h3>YAML Syntax</h3><pre>
+&gt;&gt;&gt; # path/to/components.yml
+&gt;&gt;&gt; # ----------------------
+&gt;&gt;&gt; # paras:
+&gt;&gt;&gt; #   awesome:
+&gt;&gt;&gt; #   - p: [[ &quot;{x}&quot; ]]
+&gt;&gt;&gt; #   - p:
+&gt;&gt;&gt; #     - - Another {x}
+&gt;&gt;&gt; 
+&gt;&gt;&gt; from htmldoom import renders
+&gt;&gt;&gt; from htmldoom.yaml_loader import loadyaml as ly
+&gt;&gt;&gt; 
+&gt;&gt;&gt; @renders(ly(&quot;path/to/components.yml&quot;, &quot;paras.awesome&quot;))
+... def render_paras(data):
+...     return {&quot;x&quot;: data[&quot;x&quot;]}
+... 
+&gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
+&lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
+</pre><pre>
 &gt;&gt;&gt; from htmldoom import renders, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; render_paras = renders(

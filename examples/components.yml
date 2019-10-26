@@ -1,0 +1,59 @@
+aliases:
+  &center
+    align: center
+
+
+title:
+  h1: [ *center, [ htmldoom ]]
+
+
+description:
+  p:
+    - *center
+    - - An intuitive, high performance HTML rendering framework
+
+para: 
+  p: [ *center, [ "{{contents}}" ]]
+
+
+badges:
+  - a:
+    - href: https://pypi.org/project/htmldoom
+    - - img:
+        - src: https://img.shields.io/pypi/v/htmldoom.svg
+          alt: PyPI version
+  - " "
+
+  - a:
+    - href: https://pypi.org/project/htmldoom
+    - - img:
+        - src: https://img.shields.io/pypi/pyversions/htmldoom.svg
+          alt: PyPI version
+  - " "
+
+  - a:
+    - href: https://travis-ci.org/sayanarijit/htmldoom
+    - - img:
+        - src: https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master
+          alt: Build Status
+  - " "
+
+  - a:
+    - href: https://codecov.io/gh/sayanarijit/htmldoom
+    - - img:
+        - src: https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg
+          alt: codecov
+  - " "
+
+  - a:
+    - href: https://github.com/python/black
+    - - img:
+        - src: https://img.shields.io/badge/code style-black-000000.svg
+          alt: "Code style: black"
+
+
+usage:
+  - h2: [[ Usage ]]
+
+  - p:
+    - - h3: [[ A basic tag ]]
