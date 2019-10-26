@@ -62,6 +62,6 @@ setup(
     packages=find_packages(
         exclude=["contrib", "docs", "tests", "examples", "benchmark"]
     ),
-    install_requires=[],
+    install_requires=install_requires,
     extras_require={"testing": testing_requires, "dev": dev_requires},
 )
