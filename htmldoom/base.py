@@ -16,11 +16,23 @@ __all__ = ["doctype", "composite_tag", "leaf_tag", "txt", "raw", "comment"]
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
 def txt(text):
+    """Convert to HTML escaped element.
+
+    Example:
+        >>> txt("<p></p>")
+        b'&lt;p&gt;&lt;/p&gt;'
+    """
     return escape(text).encode()
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
 def raw(text):
+    """Convert to HTML unescaped element (use with caution).
+
+    Example:
+        >>> raw("<p></p>")
+        b'<p></p>'
+    """
     return text.encode()
 
 

@@ -2,7 +2,7 @@ import pytest
 
 from htmldoom import elements as e
 from htmldoom.base import raw, txt
-from htmldoom.util import render, renders
+from htmldoom.util import loadraw, loadtxt, render, renders
 
 
 def test_render():
@@ -26,3 +26,35 @@ def test_renders():
         lambda data: {"x": data["x"]}
     )
     assert render_paras({"x": "y"}) == "<p>y</p><p>y again</p>"
+
+
+def test_loadtxt_dynamic():
+    @renders(loadtxt("tests/assets/html_components/component.html"))
+    def render_component():
+        return {"foo": "bar"}
+
+    assert render_component().strip() == render(txt("<p>bar</p>"))
+
+
+def test_loadtxt_static():
+    @renders(loadtxt("tests/assets/html_components/component.html", static=True))
+    def render_component():
+        return {"foo": "bar"}
+
+    assert render_component().strip() == render(txt("<p>{foo}</p>"))
+
+
+def test_loadraw_dynamic():
+    @renders(loadraw("tests/assets/html_components/component.html"))
+    def render_component():
+        return {"foo": "bar"}
+
+    assert render_component().strip() == render(raw("<p>bar</p>"))
+
+
+def test_loadraw_static():
+    @renders(loadraw("tests/assets/html_components/component.html", static=True))
+    def render_component():
+        return {"foo": "bar"}
+
+    assert render_component().strip() == render(raw("<p>{foo}</p>"))

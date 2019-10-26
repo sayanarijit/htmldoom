@@ -27,8 +27,7 @@
 &gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
 </pre><h3>YAML Syntax</h3><pre>
-&gt;&gt;&gt; # path/to/components.yml
-&gt;&gt;&gt; # ----------------------
+&gt;&gt;&gt; # $ cat path/to/components.yml
 &gt;&gt;&gt; # paras:
 &gt;&gt;&gt; #   awesome:
 &gt;&gt;&gt; #   - p: [[ &quot;{x}&quot; ]]
@@ -42,16 +41,6 @@
 ... def render_paras(data):
 ...     return {&quot;x&quot;: data[&quot;x&quot;]}
 ... 
-&gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
-&lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
-</pre><pre>
-&gt;&gt;&gt; from htmldoom import renders, elements as e
-&gt;&gt;&gt; 
-&gt;&gt;&gt; render_paras = renders(
-...     e.p()(&quot;{x}&quot;),
-...     e.p()(&quot;another {x}&quot;),
-... )(lambda data: {&quot;x&quot;: data[&quot;x&quot;]})
-&gt;&gt;&gt; 
 &gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph&quot;}))
 &lt;p&gt;awesome paragraph&lt;/p&gt;&lt;p&gt;another awesome paragraph&lt;/p&gt;
 </pre><p><b>NOTE: </b>This mechanism pre-renders the template when the file loads and reuse it.<br /><pre>renders( ...pre-rendered template... )( ...dynamic rendering logic... )</pre><br />The more elements you pre-render as template, the faster it gets.<br />If you properly use this mechanism and refactor your dynamic pages into smaller components, it might surpass the performance of traditional template rendering engines.</p><p><b>WARNING: </b>It performs a <code>&quot;{rendered_elements}&quot;.format(**returned_data)</code>. So each `{` or `}` in the pre-rendered template needs to be escaped with `{{` or `}}`.</p></p><p><h2>A functional style foreach loop with a switch case (probably useless)</h2><pre>

@@ -6,7 +6,7 @@ from re import sub
 
 from htmldoom.conf import CacheConfig
 
-__all__ = ["render", "renders", "double_quote", "fmt_prop"]
+__all__ = ["render", "renders", "double_quote", "fmt_prop", "loadtxt", "loadraw"]
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
@@ -80,7 +80,7 @@ def renders(*elements):
 def double_quote(txt):
     """Double quote strings safely for attributes.
     
-    Usage:
+    Example:
         >>> double_quote('abc"xyz')
         '"abc\\"xyz"'
     """
@@ -96,3 +96,55 @@ def fmt_prop(key, val):
             return double_quote(key)
         return key
     return f"{key}={double_quote(val)}"
+
+
+def loadtxt(path, static=False):
+    """Loads raw file data from given path with escaped HTML.
+
+    Arguments:
+        path (str): Path to the file to read.
+        static (bool):
+            If True, all the `{` and `}` will be replaced
+            with `{{` and `}}` respectively.
+
+    Example:
+        >>> # $ cat path/to/file.html
+        >>> # <p>{foo}</p>
+        >>> 
+        >>> loadtxt("path/to/file.html")
+        >>> b'&lt;p&gt;{foo}&lt;/p&gt;'
+        >>> 
+        >>> loadtxt("path/to/file.html", static=True)
+        >>> b'&lt;p&gt;{{foo}}&lt;/p&gt;'
+    """
+    with open(path) as f:
+        data = f.read()
+    if static:
+        data = data.replace("{", "{{").replace("}", "}}")
+    return escape(data).encode()
+
+
+def loadraw(path, static=False):
+    """Loads raw file data from given path with unescaped HTML.
+
+    Arguments:
+        path (str): Path to the file to read.
+        static (bool):
+            If True, all the `{` and `}` will be replaced
+            with `{{` and `}}` respectively.
+
+    Example:
+        >>> # $ cat path/to/file.html
+        >>> # <p>{foo}</p>
+        >>> 
+        >>> loadtxt("path/to/file.html")
+        >>> b'<p>{foo}</p>'
+        >>> 
+        >>> loadtxt("path/to/file.html", static=True)
+        >>> b'<p>{{foo}}</p>'
+    """
+    with open(path) as f:
+        data = f.read()
+    if static:
+        data = data.replace("{", "{{").replace("}", "}}")
+    return data.encode()
