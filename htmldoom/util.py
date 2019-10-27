@@ -50,11 +50,11 @@ def renders(*elements):
         ...     e.p()("{x}"),
         ...     e.p()("another {x}"),
         ... )
-        ... def render_paras(data: dict):
+        ... def paras(data: dict):
         ...     return {"x": data["x"]}
         >>> 
-        >>> print(render_paras({"x": "awesome paragraph &"}))
-        <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
+        >>> paras({"x": "awesome paragraph &"})
+        b'<p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>'
     
     Example (YAML syntax):
         >>> # paras:
@@ -64,11 +64,11 @@ def renders(*elements):
         >>> #     - - Another {x}
         >>> 
         >>> @renders(ly("path/to/components.yml", "paras.awesome"))
-        ... def render_paras(data):
+        ... def paras(data):
         ...     return {"x": data["x"]}
         ... 
-        >>> print(render_paras({"x": "awesome paragraph &"}))
-        <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
+        >>> paras({"x": "awesome paragraph &"})
+        b'<p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>'
     """
     template = render(*elements)
 
@@ -79,7 +79,7 @@ def renders(*elements):
                 v = data[k]
                 if isinstance(v, str) or isinstance(v, bytes):
                     data[k] = render(v)
-            return template.format(**data)
+            return template.format(**data).encode()
 
         return renderer
 

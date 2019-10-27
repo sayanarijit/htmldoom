@@ -22,16 +22,14 @@ def test_renders():
     def render_paras(data: dict) -> dict:
         return {"x": data["x"]}
 
-    assert render_paras({"x": "y"}) == "<p>y</p><p>y again</p>"
+    assert render_paras({"x": "y"}) == b"<p>y</p><p>y again</p>"
 
     dangerous_script = "<script>I'm dangerous</script>"
-    assert (
-        render_paras({"x": dangerous_script})
-        == f"<p>{escape(dangerous_script)}</p><p>{escape(dangerous_script)} again</p>"
+    assert render_paras({"x": dangerous_script}) == raw(
+        f"<p>{escape(dangerous_script)}</p><p>{escape(dangerous_script)} again</p>"
     )
-    assert (
-        render_paras({"x": raw(dangerous_script)})
-        == f"<p>{dangerous_script}</p><p>{dangerous_script} again</p>"
+    assert render_paras({"x": raw(dangerous_script)}) == raw(
+        f"<p>{dangerous_script}</p><p>{dangerous_script} again</p>"
     )
 
 
@@ -40,7 +38,7 @@ def test_loadtxt_dynamic():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == render(txt("<p>bar</p>"))
+    assert render_component().strip() == txt("<p>bar</p>")
 
 
 def test_loadtxt_static():
@@ -48,7 +46,7 @@ def test_loadtxt_static():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == render(txt("<p>{foo}</p>"))
+    assert render_component().strip() == txt("<p>{foo}</p>")
 
 
 def test_loadraw_dynamic():
@@ -56,7 +54,7 @@ def test_loadraw_dynamic():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == render(raw("<p>bar</p>"))
+    assert render_component().strip() == raw("<p>bar</p>")
 
 
 def test_loadraw_static():
@@ -64,4 +62,4 @@ def test_loadraw_static():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == render(raw("<p>{foo}</p>"))
+    assert render_component().strip() == raw("<p>{foo}</p>")
