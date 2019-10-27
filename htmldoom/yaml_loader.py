@@ -152,9 +152,9 @@ def parse(data):
         return _to_element(tagname, attributes, inner)
 
     if isinstance(data, list):
-        return render(*map(parse, data)).encode()
+        return render(*[parse(x) for x in data if x is not None]).encode()
 
-    return data
+    return render(data).encode()
 
 
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
@@ -198,6 +198,11 @@ def loadyaml(path, directive=None, static=False):
         nodes = directive.split(".")
         for node in nodes:
             elements = elements[node]
+
+    if elements is None:
+        raise ValueError(
+            f"Invalid format here: {path} Valid format is:\n{VALID_FORMAT}"
+        )
 
     data = parse(elements)
     if static:
