@@ -56,10 +56,10 @@ readme = (
                 """
                 >>> from htmldoom import render, elements as e
                 >>> 
-                >>> print(render(
+                >>> render(
                 ...     e.textarea("required", class_="input")("text")
-                ... ))
-                <textarea required class="input">text</textarea>
+                ... )
+                '<textarea required class="input">text</textarea>''
                 """
             )
         ),
@@ -73,10 +73,10 @@ readme = (
                 >>> 
                 >>> clipboard_copy = composite_tag("clipboard-copy")
                 >>> 
-                >>> print(render(
+                >>> render(
                 ...     clipboard_copy(value="foo")("Copy Me")
-                ... ))
-                <clipboard-copy value="foo">Copy Me</clipboard-copy>
+                ... )
+                '<clipboard-copy value="foo">Copy Me</clipboard-copy>'
                 """
             )
         ),
@@ -88,17 +88,17 @@ readme = (
         e.pre()(
             dedent(
                 """
-                >>> from htmldoom import renders, elements as e
+                >>> from htmldoom import render, renders, elements as e
                 >>> 
                 >>> @renders(
                 ...     e.p()("{x}"),
                 ...     e.p()("another {x}"),
                 ... )
-                ... def render_paras(data):
+                ... def paras(data):
                 ...     return {"x": data["x"]}
                 ... 
-                >>> render_paras({"x": "awesome paragraph &"})
-                <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
+                >>> render(paras({"x": "awesome paragraph &"}))
+                '<p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>'
                 """
             )
         ),
@@ -119,15 +119,15 @@ readme = (
         e.pre()(
             dedent(
                 """
-                >>> from htmldoom import renders
+                >>> from htmldoom import render, renders
                 >>> from htmldoom.yaml_loader import loadyaml as ly
                 >>> 
                 >>> @renders(ly("path/to/components.yml", "paras.awesome"))
-                ... def render_paras(data):
+                ... def paras(data):
                 ...     return {"x": data["x"]}
                 ... 
-                >>> print(render_paras({"x": "awesome paragraph &"}))
-                <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
+                >>> render(paras({"x": "awesome paragraph &"}))
+                '<p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>'
                 """
             )
         ),
@@ -146,11 +146,11 @@ readme = (
                 >>> from htmldoom import renders, loadraw as lr
                 >>> 
                 >>> @renders(lr("path/to/components.html"))
-                ... def render_paras(data):
+                ... def render(data):
                 ...     return {"x": data["x"]}
                 ... 
                 >>> print(render_paras({"x": "awesome paragraph &"}))
-                <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
+                '<p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>'
                 """
             )
         ),

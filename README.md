@@ -1,31 +1,31 @@
 <h1 align="center">htmldoom</h1><p align="center">An intuitive, high performance HTML rendering framework</p><p align="center"><span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/v/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/pyversions/htmldoom.svg" alt="PyPI version" /></a></span>&nbsp;<span><a href="https://travis-ci.org/sayanarijit/htmldoom"><img src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master" alt="Build Status" /></a></span>&nbsp;<span><a href="https://codecov.io/gh/sayanarijit/htmldoom"><img src="https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg" alt="codecov" /></a></span>&nbsp;<span><a href="https://github.com/python/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a></span></p><h2>Usage</h2><p><h2>A basic tag</h2><pre>
 &gt;&gt;&gt; from htmldoom import render, elements as e
 &gt;&gt;&gt; 
-&gt;&gt;&gt; print(render(
+&gt;&gt;&gt; render(
 ...     e.textarea(&quot;required&quot;, class_=&quot;input&quot;)(&quot;text&quot;)
-... ))
-&lt;textarea required class=&quot;input&quot;&gt;text&lt;/textarea&gt;
+... )
+&#x27;&lt;textarea required class=&quot;input&quot;&gt;text&lt;/textarea&gt;&#x27;&#x27;
 </pre></p><p><h2>A custom tag</h2><pre>
 &gt;&gt;&gt; from htmldoom import render, composite_tag
 &gt;&gt;&gt; 
 &gt;&gt;&gt; clipboard_copy = composite_tag(&quot;clipboard-copy&quot;)
 &gt;&gt;&gt; 
-&gt;&gt;&gt; print(render(
+&gt;&gt;&gt; render(
 ...     clipboard_copy(value=&quot;foo&quot;)(&quot;Copy Me&quot;)
-... ))
-&lt;clipboard-copy value=&quot;foo&quot;&gt;Copy Me&lt;/clipboard-copy&gt;
+... )
+&#x27;&lt;clipboard-copy value=&quot;foo&quot;&gt;Copy Me&lt;/clipboard-copy&gt;&#x27;
 </pre></p><p><h2>A fast dynamic elements rendering mechanism</h2><p>Choose whichever syntax suits you:</p><h3>Python syntax</h3><pre>
-&gt;&gt;&gt; from htmldoom import renders, elements as e
+&gt;&gt;&gt; from htmldoom import render, renders, elements as e
 &gt;&gt;&gt; 
 &gt;&gt;&gt; @renders(
 ...     e.p()(&quot;{x}&quot;),
 ...     e.p()(&quot;another {x}&quot;),
 ... )
-... def render_paras(data):
+... def paras(data):
 ...     return {&quot;x&quot;: data[&quot;x&quot;]}
 ... 
-&gt;&gt;&gt; render_paras({&quot;x&quot;: &quot;awesome paragraph &amp;&quot;})
-&lt;p&gt;awesome paragraph &amp;amp;&lt;/p&gt;&lt;p&gt;another awesome paragraph &amp;amp;&lt;/p&gt;
+&gt;&gt;&gt; render(paras({&quot;x&quot;: &quot;awesome paragraph &amp;&quot;}))
+&#x27;&lt;p&gt;awesome paragraph &amp;amp;&lt;/p&gt;&lt;p&gt;another awesome paragraph &amp;amp;&lt;/p&gt;&#x27;
 </pre><h3>YAML Syntax</h3><pre>
 # path/to/components.yml
 paras:
@@ -35,15 +35,15 @@ paras:
   - p:
     - - Another {x}
 </pre><pre>
-&gt;&gt;&gt; from htmldoom import renders
+&gt;&gt;&gt; from htmldoom import render, renders
 &gt;&gt;&gt; from htmldoom.yaml_loader import loadyaml as ly
 &gt;&gt;&gt; 
 &gt;&gt;&gt; @renders(ly(&quot;path/to/components.yml&quot;, &quot;paras.awesome&quot;))
-... def render_paras(data):
+... def paras(data):
 ...     return {&quot;x&quot;: data[&quot;x&quot;]}
 ... 
-&gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph &amp;&quot;}))
-&lt;p&gt;awesome paragraph &amp;amp;&lt;/p&gt;&lt;p&gt;another awesome paragraph &amp;amp;&lt;/p&gt;
+&gt;&gt;&gt; render(paras({&quot;x&quot;: &quot;awesome paragraph &amp;&quot;}))
+&#x27;&lt;p&gt;awesome paragraph &amp;amp;&lt;/p&gt;&lt;p&gt;another awesome paragraph &amp;amp;&lt;/p&gt;&#x27;
 </pre><h3>HTML Syntax (using the raw file loader)</h3><pre>
 &lt;!-- path/to/components.html --&gt;
 &lt;p&gt;{x}&lt;/p&gt;&lt;p&gt;another {x}&lt;/p&gt;
@@ -51,11 +51,11 @@ paras:
 &gt;&gt;&gt; from htmldoom import renders, loadraw as lr
 &gt;&gt;&gt; 
 &gt;&gt;&gt; @renders(lr(&quot;path/to/components.html&quot;))
-... def render_paras(data):
+... def render(data):
 ...     return {&quot;x&quot;: data[&quot;x&quot;]}
 ... 
 &gt;&gt;&gt; print(render_paras({&quot;x&quot;: &quot;awesome paragraph &amp;&quot;}))
-&lt;p&gt;awesome paragraph &amp;amp;&lt;/p&gt;&lt;p&gt;another awesome paragraph &amp;amp;&lt;/p&gt;
+&#x27;&lt;p&gt;awesome paragraph &amp;amp;&lt;/p&gt;&lt;p&gt;another awesome paragraph &amp;amp;&lt;/p&gt;&#x27;
 </pre><p><b>NOTE: </b>The code inside the `@renders` decorator is executed during the module load time. Hence it doesn&#x27;t add and performance overhead at runtime.<pre>renders( ...pre-rendered template... )( ...runtime rendering logic... )</pre>The more elements you pre-render as template, the faster it gets at runtime.</p><p><b>WARNING: </b>It performs a <code>&quot;{rendered_elements}&quot;.format(**returned_data)</code>. So each `{` or `}` in the pre-rendered template needs to be escaped with `{{` or `}}`. If you are using file loaders such as `loadraw()`, `loadtxt()`, `loadyaml()` etc, consider passing `static=True` in them to auto escape the curly braces.</p></p><p><h2>A functional style foreach loop with a switch case (probably useless)</h2><pre>
 &gt;&gt;&gt; from htmldoom import elements as e
 &gt;&gt;&gt; from htmldoom import functions as fn
