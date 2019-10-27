@@ -1,3 +1,5 @@
+from html import escape
+
 import pytest
 
 from htmldoom import elements as e
@@ -22,10 +24,15 @@ def test_renders():
 
     assert render_paras({"x": "y"}) == "<p>y</p><p>y again</p>"
 
-    render_paras = renders(e.p()("{x}"), e.p()("{x} again"))(
-        lambda data: {"x": data["x"]}
+    dangerous_script = "<script>I'm dangerous</script>"
+    assert (
+        render_paras({"x": dangerous_script})
+        == f"<p>{escape(dangerous_script)}</p><p>{escape(dangerous_script)} again</p>"
     )
-    assert render_paras({"x": "y"}) == "<p>y</p><p>y again</p>"
+    assert (
+        render_paras({"x": raw(dangerous_script)})
+        == f"<p>{dangerous_script}</p><p>{dangerous_script} again</p>"
+    )
 
 
 def test_loadtxt_dynamic():

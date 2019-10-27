@@ -97,8 +97,8 @@ readme = (
                 ... def render_paras(data):
                 ...     return {"x": data["x"]}
                 ... 
-                >>> print(render_paras({"x": "awesome paragraph"}))
-                <p>awesome paragraph</p><p>another awesome paragraph</p>
+                >>> render_paras({"x": "awesome paragraph &"})
+                <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
                 """
             )
         ),
@@ -106,13 +106,19 @@ readme = (
         e.pre()(
             dedent(
                 """
-                >>> # $ cat path/to/components.yml
-                >>> # paras:
-                >>> #   awesome:
-                >>> #   - p: [[ "{x}" ]]
-                >>> #   - p:
-                >>> #     - - Another {x}
-                >>> 
+                # path/to/components.yml
+                paras:
+                  awesome:
+                  - p:
+                    - - "{x}"
+                  - p:
+                    - - Another {x}
+                """
+            )
+        ),
+        e.pre()(
+            dedent(
+                """
                 >>> from htmldoom import renders
                 >>> from htmldoom.yaml_loader import loadyaml as ly
                 >>> 
@@ -120,30 +126,51 @@ readme = (
                 ... def render_paras(data):
                 ...     return {"x": data["x"]}
                 ... 
-                >>> print(render_paras({"x": "awesome paragraph"}))
-                <p>awesome paragraph</p><p>another awesome paragraph</p>
+                >>> print(render_paras({"x": "awesome paragraph &"}))
+                <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
+                """
+            )
+        ),
+        e.h3()("HTML Syntax (using the raw file loader)"),
+        e.pre()(
+            dedent(
+                """
+                <!-- path/to/components.html -->
+                <p>{x}</p><p>another {x}</p>
+                """
+            )
+        ),
+        e.pre()(
+            dedent(
+                """
+                >>> from htmldoom import renders, loadraw as lr
+                >>> 
+                >>> @renders(lr("path/to/components.html"))
+                ... def render_paras(data):
+                ...     return {"x": data["x"]}
+                ... 
+                >>> print(render_paras({"x": "awesome paragraph &"}))
+                <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
                 """
             )
         ),
         e.p()(
             e.b()("NOTE: "),
-            "This mechanism pre-renders the template when the file loads and reuse it.",
-            e.br(),
+            "The code inside the `@renders` decorator is executed during the module load time.",
+            " Hence it doesn't add and performance overhead at runtime.",
             e.pre()(
-                "renders( ...pre-rendered template... )( ...dynamic rendering logic... )"
+                "renders( ...pre-rendered template... )( ...runtime rendering logic... )"
             ),
-            e.br(),
-            "The more elements you pre-render as template, the faster it gets.",
-            e.br(),
-            "If you properly use this mechanism and refactor your dynamic pages into smaller"
-            " components, it might surpass the performance of traditional template rendering engines.",
+            "The more elements you pre-render as template, the faster it gets at runtime.",
         ),
         e.p()(
             e.b()("WARNING: "),
             "It performs a ",
             e.code()('"{rendered_elements}".format(**returned_data)'),
             ". So each `{` or `}` in the pre-rendered template needs to be",
-            " escaped with `{{` or `}}`.",
+            " escaped with `{{` or `}}`. If you are using file loaders",
+            " such as `loadraw()`, `loadtxt()`, `loadyaml()` etc, consider",
+            " passing `static=True` in them to auto escape the curly braces.",
         ),
     ),
     e.p()(

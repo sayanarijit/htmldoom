@@ -45,7 +45,7 @@ def renders(*elements):
     It improves the performance a lot by pre-compiling the templates.
     Hence, it's highly recommended to use this decorator.
 
-    Example (syntax 1):
+    Example (Python syntax):
         >>> @renders(
         ...     e.p()("{x}"),
         ...     e.p()("another {x}"),
@@ -53,23 +53,33 @@ def renders(*elements):
         ... def render_paras(data: dict):
         ...     return {"x": data["x"]}
         >>> 
-        >>> render_paras({"x": "awesome paragraph"})
-        <p>awesome paragraph</p><p>another awesome paragraph</p>
+        >>> print(render_paras({"x": "awesome paragraph &"}))
+        <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
     
-    Example (syntax 2):
-        >>> render_paras = renders(
-        ...     e.p()("{x}"),
-        ...     e.p()("another {x}"),
-        ... )(lambda data: {"x": data["x"]})
+    Example (YAML syntax):
+        >>> # paras:
+        >>> #   awesome:
+        >>> #   - p: [[ "{x}" ]]
+        >>> #   - p:
+        >>> #     - - Another {x}
         >>> 
-        >>> render_paras({"x": "awesome paragraph"})
-        <p>awesome paragraph</p><p>another awesome paragraph</p>
+        >>> @renders(ly("path/to/components.yml", "paras.awesome"))
+        ... def render_paras(data):
+        ...     return {"x": data["x"]}
+        ... 
+        >>> print(render_paras({"x": "awesome paragraph &"}))
+        <p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>
     """
     template = render(*elements)
 
     def wrapped(func):
         def renderer(*args, **kwargs):
-            return template.format(**func(*args, **kwargs))
+            data = func(*args, **kwargs)
+            for k in data:
+                v = data[k]
+                if isinstance(v, str) or isinstance(v, bytes):
+                    data[k] = render(v)
+            return template.format(**data)
 
         return renderer
 
