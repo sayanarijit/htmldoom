@@ -89,7 +89,7 @@ def test_components_leaf_tag_with_multiple_tags():
 
 
 def test_invalid_format():
-    for i in range(12):
+    for i in range(13):
         with pytest.raises(ValueError) as e:
             ly(YAML_INVALID_COMPONENTS, str(i))
         assert VALID_FORMAT in str(e.value)
