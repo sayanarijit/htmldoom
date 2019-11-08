@@ -26,7 +26,7 @@ testing_requires = install_requires + [
     "mypy>=0.710",
     "lxml>=4.3.4",
 ]
-dev_requires = testing_requires + ["tox>=3.12.1"]
+dev_requires = testing_requires + ["tox>=3.12.1", "markdown2"]
 
 setup(
     name="htmldoom",

@@ -38,7 +38,7 @@ def test_loadtxt_dynamic():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == txt("<p>bar</p>")
+    assert render_component() == txt("<p>bar</p>")
 
 
 def test_loadtxt_static():
@@ -46,7 +46,7 @@ def test_loadtxt_static():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == txt("<p>{foo}</p>")
+    assert render_component() == txt("<p>{foo}</p>")
 
 
 def test_loadraw_dynamic():
@@ -54,7 +54,7 @@ def test_loadraw_dynamic():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == raw("<p>bar</p>")
+    assert render_component() == raw("<p>bar</p>")
 
 
 def test_loadraw_static():
@@ -62,4 +62,4 @@ def test_loadraw_static():
     def render_component():
         return {"foo": "bar"}
 
-    assert render_component().strip() == raw("<p>{foo}</p>")
+    assert render_component() == raw("<p>{foo}</p>")

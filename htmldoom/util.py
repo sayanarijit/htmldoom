@@ -128,7 +128,7 @@ def loadtxt(path, static=False):
         >>> b'&lt;p&gt;{{foo}}&lt;/p&gt;'
     """
     with open(path) as f:
-        data = f.read()
+        data = f.read().strip()
     if static:
         data = data.replace("{", "{{").replace("}", "}}")
     return escape(data).encode()
@@ -154,7 +154,7 @@ def loadraw(path, static=False):
         >>> b'<p>{{foo}}</p>'
     """
     with open(path) as f:
-        data = f.read()
+        data = f.read().strip()
     if static:
         data = data.replace("{", "{{").replace("}", "}}")
     return data.encode()

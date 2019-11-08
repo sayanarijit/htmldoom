@@ -9,7 +9,7 @@ from functools import lru_cache
 from yaml import SafeLoader, dump, load
 
 from htmldoom import render
-from htmldoom.base import composite_tag, leaf_tag
+from htmldoom.base import composite_tag, leaf_tag, txt
 from htmldoom.conf import CacheConfig
 
 VALID_FORMAT = """
@@ -93,6 +93,8 @@ def parse(data):
             Data to parse.
 
     Examples:
+        >>> from htmldoom.yaml_loader import parse
+        >>> 
         >>> parse({
         ...     "div": [
         ...         {"class": "row"},
@@ -172,31 +174,28 @@ def loadyaml(path, directive=None, static=False):
             with `{{` and `}}` respectively.
     
     Examples:
-        >>> # $ cat path/to/component.yml
-        >>> # p:
-        >>> # - - "{foo}"
+        >>> from htmldoom.yaml_loader import loadyaml
         >>> 
         >>> loadyaml("/path/to/component.yml")
-        b<p>{foo}</p>
+        b'<p>{foo}</p>'
         >>> 
         >>> loadyaml("/path/to/components.yml", static=True)
-        b<p>{{foo}}</p>
-
-        >>> # $ cat path/to/components.yml
-        >>> # paragraphs:
-        >>> #   myfav:
-        >>> #   - p:
-        >>> #     - - "{foo}"
+        b'<p>{foo}</p>'
         >>> 
         >>> loadyaml("/path/to/components.yml", "paragraph.myfav", static=True)
-        b<p>{{foo}}</p>
+        b'<p>{foo}</p>'
+        >>> 
+        >>> loadyaml("/path/to/components.yml", ("paragraph", "case", True))
+        b'<p>{foo}</p>'
     """
     with open(path) as f:
         elements = load(f, Loader=SafeLoader)
 
-    if directive is not None:
-        nodes = directive.split(".")
-        for node in nodes:
+    if isinstance(directive, str):
+        directive = directive.split(".")
+
+    if directive:
+        for node in directive:
             elements = elements[node]
 
     if elements is None:
