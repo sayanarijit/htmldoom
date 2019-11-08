@@ -1,3 +1,11 @@
+somevalue:
+  foo: bar
+
+switch:
+  case:
+    false: "false"
+    true: "true"
+
 leaf_tag:
   empty:
     # <sometag />

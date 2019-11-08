@@ -2,7 +2,7 @@ import pytest
 
 from htmldoom import elements as e
 from htmldoom import render
-from htmldoom.base import composite_tag, leaf_tag
+from htmldoom.base import composite_tag, leaf_tag, txt
 from htmldoom.yaml_loader import VALID_FORMAT
 from htmldoom.yaml_loader import loadyaml as ly
 
@@ -30,6 +30,16 @@ def test_loadyaml_static():
         e.i(class_="horror")("{{!}}"),
     )
     assert my_alert == your_alert
+
+
+def test_somevalue():
+    assert ly(YAML_COMPONENTS, "somevalue.foo") == txt("bar")
+    assert ly(YAML_COMPONENTS, ("somevalue", "foo")) == txt("bar")
+
+
+def test_switch():
+    assert ly(YAML_COMPONENTS, ("switch", "case", True)) == txt("true")
+    assert ly(YAML_COMPONENTS, ("switch", "case", False)) == txt("false")
 
 
 def test_components_leaf_tag_empty():

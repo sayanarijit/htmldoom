@@ -1,0 +1,180 @@
+<!DOCTYPE html><html><head><title>Introduction - htmldoom documentation</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.min.css" integrity="sha256-HbgiGHMLxHZ3kkAiixyvnaaZFNjNWLYKD/QG6PWaQPc=" crossorigin="anonymous" /><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" /></head><body><div class="container"><article class="markdown-body"><h1>htmldoom</h1>
+
+<p><a href="https://app.netlify.com/sites/htmldoom/deploys"><img src="https://api.netlify.com/api/v1/badges/8bedc4f4-508a-494d-8160-02f6a76d4b04/deploy-status" alt="Documentation" /></a>
+<a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/v/htmldoom.svg" alt="PyPI version" /></a>
+<a href="https://pypi.org/project/htmldoom"><img src="https://img.shields.io/pypi/pyversions/htmldoom.svg" alt="PyPI pyversions" /></a>
+<a href="https://travis-ci.org/sayanarijit/htmldoom"><img src="https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master" alt="Build Status" /></a>
+<a href="https://codecov.io/gh/sayanarijit/htmldoom"><img src="https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg" alt="codecov" /></a>
+<a href="https://github.com/python/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a></p>
+
+<h2>Introducing htmldoom</h2>
+
+<p><a href="https://github.com/sayanarijit/htmldoom">htmldoom</a> is an HTML rendering framework for Python that helps you define your
+HTML documents, templates, layouts and contents in an organised way, gives you
+the flexibility to use many different syntaxes, option to declare and debug
+different components and pages separately and more... all without making you
+worry about the runtime performance.</p>
+
+<h2>How does it work?</h2>
+
+<p>Understanding the working principle will get pretty intuitive if we go one
+feature at a time. Let's start with HTML escaping.</p>
+
+<h3>HTML escaping</h3>
+
+<p>In the center of htmldoom's functionality is the HTML escaping logic. Texts to
+be escaped are represented using <code>str</code>, while texts that should not be escaped
+are represented using <code>bytes</code>. The <code>htmldoom.renders()</code> function receives the
+texts as inputs, then for each input, it decides whether to escape it or not
+based on if it is <code>str</code> or <code>bytes</code> and returns the rendered text in <code>str</code> format.</p>
+
+<p>We can use <code>htmldoom.txt()</code> to convert some string into HTML escaped text, and
+<code>htmldoom.raw()</code> to convert some string into HTML unescaped text. It should be
+noted that both the functions will return text formatted in <code>bytes</code> which can be
+passed to the <code>htmldoom.render()</code> to render it back to <code>str</code>.</p>
+
+<h3>HTML elements</h3>
+
+<p>HTML elements or tags can be defined using the <code>htmldoom.composite_tag()</code> and
+the <code>htmldoom.leaf_tag()</code> functions. Any tag that can have child elements (e.g.
+<code>&lt;p&gt;&lt;/p&gt;</code>) are defined using <code>htmldoom.composite_tag()</code>.</p>
+
+<p>For example:</p>
+
+<pre><code>p = composite_tag("p")
+</code></pre>
+
+<p>Tags that cannot have child elements are defined using <code>htmldoom.leaf_tag()</code>.</p>
+
+<p>For example:</p>
+
+<pre><code>input_ = leaf_tag("input")
+</code></pre>
+
+<p>So when we call <code>p(class_="red")("foo", "bar")</code> or <code>input_(type_="button")</code>,
+we get <code>bytes</code> encoded <code>&lt;p class="red"&gt;foobar&lt;/p&gt;</code> or
+<code>&lt;input type="button" /&gt;</code> respectively. The <code>htmldoom.render()</code> function will
+render them back to <code>str</code>.</p>
+
+<h3>HTML components / layouts</h3>
+
+<p>HTML components i.e. combination of several elements (tags and texts) can be
+defined using the <code>@htmldoom.renders()</code> decorator like below.</p>
+
+<pre><code>from htmldoom import renders, elements as e
+
+@renders(
+    e.p(class_="red")("{key1}", "{key2}"),
+    e._input(type_="button")
+)
+def my_component(value1, value2):
+    return {"key1": value1, "key2": value2}
+</code></pre>
+
+<p>Now we can render the component by calling it with the required arguments e.g.</p>
+
+<pre><code>my_document(value1="&amp;amp;", value2=b"&amp;amp;")
+</code></pre>
+
+<p>This will return a <code>bytes</code> encoded text. The <code>value1</code> will be escaped to <code>&amp;amp;amp;</code> since
+it is <code>str</code>. <code>value2</code> is in <code>bytes</code>, hence it will remain the same and wil be
+rendered in the browser as <code>&amp;</code>.</p>
+
+<p>Calling this will return <code>bytes</code> encoded text</p>
+
+<pre><code>&lt;p class="red"&gt;foobar&lt;/p&gt;&lt;input type="button" /&gt;
+</code></pre>
+
+<p>which can be rendered into string using <code>htmldoom.render()</code>.</p>
+
+<p>This mechanism renders the template text during module load time. Hence there should be
+no performance drop in runtime.</p>
+
+<blockquote>
+  <p>NOTE: It is important to note that every <code>{</code> and <code>}</code> should be escaped with <code>{{</code> and
+  <code>}}</code> when it is not being used as a placeholder for some variable.</p>
+</blockquote>
+
+<p>It is also possible to define the components using <code>yaml</code> syntax like below.</p>
+
+<pre><code>some:
+  demo:
+    p:
+    - class: red
+    - - "{key1}"
+      - "{key2}"
+    input:
+    - type: button
+</code></pre>
+
+<p>And then define the component renderer like below.</p>
+
+<pre><code>from htmldoom import renders
+from htmldoom.yaml_loader import loadyaml
+
+@renders(loadyaml("path/to/component.yaml", ("some", "demo")))
+def my_component(value1, value2):
+    return {"key1": value1, "key2": value2}
+</code></pre>
+
+<p>We can also use escaped and raw loaders with the <code>htmldoom.loadtxt()</code> and <code>htmldoom.loadraw()</code>
+functions respectively. We only need to pass the file path as shown in the <code>yaml</code> example.</p>
+
+<p>We can use the same syntax to define reusable layouts.</p>
+
+<h3>Separating values from templates</h3>
+
+<p>htmldoom provides us with a friendly way to separate values from layouts or components
+templates. The <code>htmldoom.value_loader.loadvalues()</code> function scans the given directory and
+returns a nested namedtuple with the file or directory names as element names and the loaded
+contents as the values. We can pass this to components like below.</p>
+
+<pre><code>from htmldoom import renders, elements as e
+from htmldoom.value_loader import loadvalues
+
+values = loadvalues("path/to/values")
+
+@renders(
+    e.p()("{v.title}"),
+    e.p()("{v.content.line1}")
+    e.p()("{v.content.line2}")
+    e.p()("{v.content.line3}")
+)
+def my_component():
+    return {"v": values}
+</code></pre>
+
+<p>So we need a directory structure like below.</p>
+
+<pre><code>values
+├── title.txt
+└── content
+    ├── line1.txt
+    ├── line2.html
+    └── line3.yml
+</code></pre>
+
+<p>As you mught have guessed, this can load the values based of file types. You can use
+your own renderer for file types such as <code>md</code> or <code>rst</code> by extending the
+<code>htmldoom.value_loader.EXTENSION_RENDERERS</code> map and passing is to the
+<code>htmldoom.value_loader.loadvalues()</code> function like below.</p>
+
+<pre><code>from htmldoom import raw
+from htmldoom.value_loader import loadvalues, EXTENSION_RENDERERS
+
+def markdown_to_html(path):
+    """Some function that reads the file, converts the content to HTML,
+    and returns the converted data as string.
+    """
+    # The logic goes here...
+
+MY_EXTENSION_RENDERERS = dict(
+    md=lambda path: raw(markdown_to_html(path)),
+    **EXTENSION_RENDERERS
+)
+
+values = loadvalues("path/to/values", extension_renderers=MY_EXTENSION_RENDERERS)
+</code></pre>
+
+<p>In fact, this documentation is generated using the same method.</p>
+</article></div></body></html>
