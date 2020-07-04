@@ -4,6 +4,11 @@ from functools import lru_cache
 from html import escape
 from re import sub
 
+try:
+    from collections.abc import Iterator
+except ImportError:
+    from collections import Iterator
+
 from htmldoom.conf import CacheConfig
 
 __all__ = ["render", "renders", "double_quote", "fmt_prop", "loadtxt", "loadraw"]
@@ -12,7 +17,7 @@ __all__ = ["render", "renders", "double_quote", "fmt_prop", "loadtxt", "loadraw"
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
 def render(*elements):
     """Use it to render DOM elements.
-    
+
     Example:
         >>> from htmldoom import render
         >>> from htmldoom.elements import p
@@ -25,13 +30,15 @@ def render(*elements):
 
     if len(elements) == 1:
         el = elements[0]
-        if callable(el):
+        while callable(el):
             # Forgot to call with no arguments? no worries...
             el = el()
         if isinstance(el, str):
             return escape(el)
         if isinstance(el, bytes):
             return el.decode()
+        if isinstance(el, Iterator):
+            return render(*el)
         raise ValueError(
             f"{el}: expected either of str, bytes, or a callable but got {type(el)}"
         )
@@ -77,7 +84,11 @@ def renders(*elements):
             data = func(*args, **kwargs)
             for k in data:
                 v = data[k]
-                if isinstance(v, str) or isinstance(v, bytes):
+                if (
+                    isinstance(v, str)
+                    or isinstance(v, bytes)
+                    or isinstance(v, Iterator)
+                ):
                     data[k] = render(v)
             return template.format(**data).encode()
 
