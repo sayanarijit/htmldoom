@@ -6,7 +6,7 @@ from re import sub
 
 try:
     from collections.abc import Iterator
-except ImportError:
+except ImportError:  # pragma: no cover
     from collections import Iterator
 
 from htmldoom.conf import CacheConfig
@@ -48,7 +48,7 @@ def render(*elements):
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
 def renders(*elements):
     """Decorator for rendering dynamic elements based on given template.
-    
+
     It improves the performance a lot by pre-compiling the templates.
     Hence, it's highly recommended to use this decorator.
 
@@ -62,7 +62,7 @@ def renders(*elements):
         >>> 
         >>> paras({"x": "awesome paragraph &"})
         b'<p>awesome paragraph &amp;</p><p>another awesome paragraph &amp;</p>'
-    
+
     Example (YAML syntax):
         >>> # paras:
         >>> #   awesome:
@@ -88,6 +88,7 @@ def renders(*elements):
                     isinstance(v, str)
                     or isinstance(v, bytes)
                     or isinstance(v, Iterator)
+                    or callable(v)
                 ):
                     data[k] = render(v)
             return template.format(**data).encode()
@@ -100,7 +101,7 @@ def renders(*elements):
 @lru_cache(maxsize=CacheConfig.MAXSIZE)
 def double_quote(txt):
     """Double quote strings safely for attributes.
-    
+
     Example:
         >>> double_quote('abc"xyz')
         '"abc\\"xyz"'

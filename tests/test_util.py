@@ -3,6 +3,7 @@ from html import escape
 import pytest
 
 from htmldoom import elements as e
+from htmldoom import functions as fn
 from htmldoom.base import raw, txt
 from htmldoom.util import loadraw, loadtxt, render, renders
 
@@ -12,7 +13,7 @@ def test_render():
     assert render(txt("&nbsp;")) == "&amp;nbsp;"
     assert render(b"&nbsp;") == "&nbsp;"
     assert render(raw("&nbsp;")) == "&nbsp;"
-    assert render(e.p(), e.p()) == "<p></p><p></p>"
+    assert render(e.p(), e.p) == "<p></p><p></p>"
     with pytest.raises(ValueError):
         render(1)
 
@@ -30,6 +31,22 @@ def test_renders():
     )
     assert render_paras({"x": raw(dangerous_script)}) == raw(
         f"<p>{dangerous_script}</p><p>{dangerous_script} again</p>"
+    )
+
+    @renders(e.li()("{item}"))
+    def render_list_item(item):
+        return {"item": item}
+
+    @renders(e.p()("{foo}"), e.ul()("{list_items}"))
+    def render_component():
+        return {
+            "foo": e.hr,
+            "list_items": fn.foreach(["a", "b", "c"])(lambda x: render_list_item(x)),
+        }
+
+    assert (
+        render(render_component())
+        == "<p><hr /></p><ul><li>a</li><li>b</li><li>c</li></ul>"
     )
 
 
