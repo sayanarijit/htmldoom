@@ -1,11 +1,5 @@
 htmldoom
 ========
-[![Documentation](https://api.netlify.com/api/v1/badges/8bedc4f4-508a-494d-8160-02f6a76d4b04/deploy-status)](https://app.netlify.com/sites/htmldoom/deploys)
-[![PyPI version](https://img.shields.io/pypi/v/htmldoom.svg)](https://pypi.org/project/htmldoom)
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/htmldoom.svg)](https://pypi.org/project/htmldoom)
-[![Build Status](https://travis-ci.org/sayanarijit/htmldoom.svg?branch=master)](https://travis-ci.org/sayanarijit/htmldoom)
-[![codecov](https://codecov.io/gh/sayanarijit/htmldoom/branch/master/graph/badge.svg)](https://codecov.io/gh/sayanarijit/htmldoom)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 
 
 Introducing htmldoom
